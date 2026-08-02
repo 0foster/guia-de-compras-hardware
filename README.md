@@ -27,11 +27,11 @@ O projeto foi construído utilizando as ferramentas mais modernas do ecossistema
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/guia-de-compras.git
+    git clone https://github.com/0foster/guia-de-compras-hardware.git
    ```
 2. Entre na pasta do projeto:
    ```bash
-   cd guia-de-compras
+    cd guia-de-compras-hardware
    ```
 3. Instale as dependências:
    ```bash
@@ -94,11 +94,12 @@ O site é fortemente guiado a dados (*data-driven*), baseando-se em dois arquivo
 - ✅ Suporte completo a Dark Mode
 - ✅ SEO Avançado (Sitemap, tags Meta, JSON-LD Schemas)
 - ✅ Arquitetura base implementada (Astro + Tailwind)
+- ✅ Busca dinâmica com matching parcial e normalização de acentos
+- ✅ Testes automatizados com Vitest (63 testes)
 
 **Em andamento / Placeholders:**
 - 🚧 Links de afiliados (atualmente utilizando dados simulados)
 - 🚧 Imagens das placas de vídeo (atualmente utilizando SVG placeholders)
-- 🚧 Componente de busca por texto (em desenvolvimento)
 
 ## Roadmap 🗺️
 
