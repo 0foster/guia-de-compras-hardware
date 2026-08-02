@@ -1,0 +1,39 @@
+---
+import JsonLd from './JsonLd.astro';
+import type { Gpu, AffiliateLink } from '../../utils/gpu';
+
+interface Props {
+  gpu: Gpu;
+  links?: AffiliateLink;
+  image?: string;
+}
+
+const { gpu, links, image } = Astro.props;
+const imageURL = image ? new URL(image, Astro.site).toString() : undefined;
+
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: gpu.name,
+  description: gpu.metaDescription,
+  brand: { '@type': 'Brand', name: 'NVIDIA' },
+  category: 'Placa de Vídeo',
+};
+
+if (imageURL) schema.image = imageURL;
+
+if (links) {
+  schema.offers = {
+    '@type': 'AggregateOffer',
+    lowPrice: links.priceRange.min,
+    highPrice: links.priceRange.max,
+    priceCurrency: 'BRL',
+    offerCount: 2,
+    availability: gpu.inStock
+      ? 'https://schema.org/InStock'
+      : 'https://schema.org/OutOfStock',
+  };
+}
+---
+
+<JsonLd schema={schema} />

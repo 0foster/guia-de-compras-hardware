@@ -1,0 +1,62 @@
+---
+interface Props {
+  vram: number;
+  vramType: string;
+  tdp: number;
+  cudaCores: number;
+  baseClock: number;
+  boostClock: number;
+  memoryBus: number;
+  memoryBandwidth: number;
+  pciExpress: string;
+  recommendedPsu: number;
+  displayOutputs: {
+    hdmi: string;
+    displayPort: string;
+    totalOutputs: number;
+  };
+}
+
+const props = Astro.props;
+
+const specs = [
+  { group: 'Memória', items: [
+    { label: 'VRAM', value: `${props.vram} GB ${props.vramType}` },
+    { label: 'Barramento de Memória', value: `${props.memoryBus}-bit` },
+    { label: 'Largura de Banda', value: `${props.memoryBandwidth} GB/s` },
+  ]},
+  { group: 'Performance', items: [
+    { label: 'CUDA Cores', value: props.cudaCores.toLocaleString('pt-BR') },
+    { label: 'Clock Base', value: `${props.baseClock} MHz` },
+    { label: 'Clock Boost', value: `${props.boostClock} MHz` },
+  ]},
+  { group: 'Energia', items: [
+    { label: 'TDP', value: `${props.tdp}W` },
+    { label: 'Fonte Recomendada', value: `${props.recommendedPsu}W` },
+  ]},
+  { group: 'Conectividade', items: [
+    { label: 'PCIe', value: props.pciExpress },
+    { label: 'HDMI', value: props.displayOutputs.hdmi },
+    { label: 'DisplayPort', value: props.displayOutputs.displayPort },
+    { label: 'Total de Saídas', value: `${props.displayOutputs.totalOutputs}` },
+  ]},
+];
+---
+
+<div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
+  {specs.map((section, i) => (
+    <div>
+      <div class="bg-gray-100 px-4 py-2 dark:bg-gray-800">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">{section.group}</h4>
+      </div>
+      <div class="divide-y divide-gray-100 dark:divide-gray-800">
+        {section.items.map((item) => (
+          <div class="flex items-center justify-between px-4 py-3">
+            <span class="text-sm text-gray-500 dark:text-gray-400">{item.label}</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{item.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>

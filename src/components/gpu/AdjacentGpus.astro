@@ -1,0 +1,63 @@
+---
+import { getGpuBySlug } from '../../utils/gpu';
+
+interface Props {
+  stepDown?: string;
+  stepUp?: string;
+}
+
+const { stepDown, stepUp } = Astro.props;
+const gpuDown = stepDown ? getGpuBySlug(stepDown) : undefined;
+const gpuUp = stepUp ? getGpuBySlug(stepUp) : undefined;
+
+// Don't render if neither adjacent GPU exists in the database
+if (!gpuDown && !gpuUp) return;
+---
+
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+  {gpuDown ? (
+    <a
+      href={`/gpus/${gpuDown.slug}`}
+      class="group flex items-center gap-4 rounded-xl border border-gray-200 p-4 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-900"
+    >
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </div>
+      <div>
+        <span class="text-xs text-gray-500 dark:text-gray-400">Um degrau abaixo</span>
+        <p class="font-semibold text-gray-900 group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400">
+          {gpuDown.shortName}
+        </p>
+      </div>
+    </a>
+  ) : (
+    <div class="rounded-xl border border-dashed border-gray-200 p-4 text-center text-sm text-gray-400 dark:border-gray-800 dark:text-gray-600">
+      Nenhuma GPU abaixo cadastrada
+    </div>
+  )}
+
+  {gpuUp ? (
+    <a
+      href={`/gpus/${gpuUp.slug}`}
+      class="group flex items-center gap-4 rounded-xl border border-gray-200 p-4 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-900"
+    >
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+      </div>
+      <div>
+        <span class="text-xs text-gray-500 dark:text-gray-400">Um degrau acima</span>
+        <p class="font-semibold text-gray-900 group-hover:text-green-600 dark:text-gray-100 dark:group-hover:text-green-400">
+          {gpuUp.shortName}
+        </p>
+      </div>
+    </a>
+  ) : (
+    <div class="rounded-xl border border-dashed border-gray-200 p-4 text-center text-sm text-gray-400 dark:border-gray-800 dark:text-gray-600">
+      Nenhuma GPU acima cadastrada
+    </div>
+  )}
+</div>

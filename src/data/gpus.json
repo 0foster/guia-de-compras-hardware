@@ -1,0 +1,354 @@
+{
+  "gpus": [
+    {
+      "slug": "rtx-5050",
+      "name": "NVIDIA GeForce RTX 5050",
+      "shortName": "RTX 5050",
+      "releaseYear": 2025,
+      "performanceTier": 1,
+      "targetResolution": ["1080p"],
+      "vram": 8,
+      "vramType": "GDDR6",
+      "tdp": 130,
+      "cudaCores": 2560,
+      "baseClock": 2317,
+      "boostClock": 2570,
+      "memoryBus": 128,
+      "memoryBandwidth": 320,
+      "pciExpress": "5.0 x8",
+      "recommendedPsu": 550,
+      "displayOutputs": {
+        "hdmi": "2.1b",
+        "displayPort": "2.1b",
+        "totalOutputs": 4
+      },
+      "aiSummary": "A RTX 5050 é a porta de entrada da geração Blackwell, ideal para 1080p competitivo e jogos atuais em configurações médias. Boa escolha para quem está montando o primeiro PC gamer com orçamento apertado, sem abrir mão de DLSS 4 e ray tracing leve.",
+      "fps": {
+        "1080p": {
+          "cyberpunk2077Ultra": 75,
+          "fortniteCompetitive": 220,
+          "msfs2024Ultra": 38,
+          "avg": 111
+        },
+        "1440p": {
+          "cyberpunk2077Ultra": 50,
+          "fortniteCompetitive": 150,
+          "msfs2024Ultra": 25,
+          "avg": 75
+        },
+        "4K": {
+          "cyberpunk2077Ultra": 25,
+          "fortniteCompetitive": 80,
+          "msfs2024Ultra": 12,
+          "avg": 39
+        }
+      },
+      "adjacentGpus": {
+        "stepDown": "",
+        "stepUp": "rtx-5060"
+      },
+      "inStock": true,
+      "metaDescription": "RTX 5050: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+    },
+    {
+      "slug": "rtx-5060",
+      "name": "NVIDIA GeForce RTX 5060",
+      "shortName": "RTX 5060",
+      "releaseYear": 2025,
+      "performanceTier": 2,
+      "targetResolution": ["1080p", "1440p"],
+      "vram": 8,
+      "vramType": "GDDR7",
+      "tdp": 145,
+      "cudaCores": 3840,
+      "baseClock": 2235,
+      "boostClock": 2497,
+      "memoryBus": 128,
+      "memoryBandwidth": 448,
+      "pciExpress": "5.0 x8",
+      "recommendedPsu": 550,
+      "displayOutputs": {
+        "hdmi": "2.1b",
+        "displayPort": "2.1b",
+        "totalOutputs": 4
+      },
+      "aiSummary": "Sucessora natural da RTX 4060, oferece um salto considerável em 1080p e cobre 1440p com folga em jogos competitivos. O ponto de equilíbrio para quem quer rodar tudo no high sem gastar demais, com suporte a DLSS 4 e Frame Generation.",
+      "fps": {
+        "1080p": {
+          "cyberpunk2077Ultra": 105,
+          "fortniteCompetitive": 280,
+          "msfs2024Ultra": 50,
+          "avg": 145
+        },
+        "1440p": {
+          "cyberpunk2077Ultra": 72,
+          "fortniteCompetitive": 200,
+          "msfs2024Ultra": 35,
+          "avg": 102
+        },
+        "4K": {
+          "cyberpunk2077Ultra": 38,
+          "fortniteCompetitive": 115,
+          "msfs2024Ultra": 18,
+          "avg": 57
+        }
+      },
+      "adjacentGpus": {
+        "stepDown": "rtx-5050",
+        "stepUp": "rtx-5060-ti"
+      },
+      "inStock": true,
+      "metaDescription": "RTX 5060: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+    },
+    {
+      "slug": "rtx-5060-ti",
+      "name": "NVIDIA GeForce RTX 5060 Ti",
+      "shortName": "RTX 5060 Ti",
+      "releaseYear": 2025,
+      "performanceTier": 2,
+      "targetResolution": ["1080p", "1440p"],
+      "vram": 16,
+      "vramType": "GDDR7",
+      "tdp": 180,
+      "cudaCores": 4608,
+      "baseClock": 2407,
+      "boostClock": 2572,
+      "memoryBus": 128,
+      "memoryBandwidth": 448,
+      "pciExpress": "5.0 x8",
+      "recommendedPsu": 600,
+      "displayOutputs": {
+        "hdmi": "2.1b",
+        "displayPort": "2.1b",
+        "totalOutputs": 4
+      },
+      "aiSummary": "Versão potencializada da RTX 5060 com mais CUDA cores e a opção de 16GB de VRAM. Boa para 1440p, especialmente em jogos modernos com texturas pesadas — a versão de 16GB é a mais recomendada para quem quer longevidade.",
+      "fps": {
+        "1080p": {
+          "cyberpunk2077Ultra": 130,
+          "fortniteCompetitive": 320,
+          "msfs2024Ultra": 60,
+          "avg": 170
+        },
+        "1440p": {
+          "cyberpunk2077Ultra": 90,
+          "fortniteCompetitive": 240,
+          "msfs2024Ultra": 42,
+          "avg": 124
+        },
+        "4K": {
+          "cyberpunk2077Ultra": 50,
+          "fortniteCompetitive": 145,
+          "msfs2024Ultra": 25,
+          "avg": 73
+        }
+      },
+      "adjacentGpus": {
+        "stepDown": "rtx-5060",
+        "stepUp": "rtx-5070"
+      },
+      "inStock": true,
+      "metaDescription": "RTX 5060 Ti: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+    },
+    {
+      "slug": "rtx-5070",
+      "name": "NVIDIA GeForce RTX 5070",
+      "shortName": "RTX 5070",
+      "releaseYear": 2025,
+      "performanceTier": 3,
+      "targetResolution": ["1440p"],
+      "vram": 12,
+      "vramType": "GDDR7",
+      "tdp": 250,
+      "cudaCores": 6144,
+      "baseClock": 2160,
+      "boostClock": 2512,
+      "memoryBus": 192,
+      "memoryBandwidth": 672,
+      "pciExpress": "5.0 x16",
+      "recommendedPsu": 650,
+      "displayOutputs": {
+        "hdmi": "2.1b",
+        "displayPort": "2.1b",
+        "totalOutputs": 4
+      },
+      "aiSummary": "Posicionada para dominar o 1440p com folga, a RTX 5070 entrega performance sólida em high refresh rate. Cobre 4K em jogos menos exigentes com DLSS 4 ativo. Ótima escolha para gamers que jogam em monitores de 144Hz+.",
+      "fps": {
+        "1080p": {
+          "cyberpunk2077Ultra": 175,
+          "fortniteCompetitive": 380,
+          "msfs2024Ultra": 75,
+          "avg": 210
+        },
+        "1440p": {
+          "cyberpunk2077Ultra": 130,
+          "fortniteCompetitive": 320,
+          "msfs2024Ultra": 58,
+          "avg": 169
+        },
+        "4K": {
+          "cyberpunk2077Ultra": 70,
+          "fortniteCompetitive": 195,
+          "msfs2024Ultra": 35,
+          "avg": 100
+        }
+      },
+      "adjacentGpus": {
+        "stepDown": "rtx-5060-ti",
+        "stepUp": "rtx-5070-ti"
+      },
+      "inStock": true,
+      "metaDescription": "RTX 5070: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+    },
+    {
+      "slug": "rtx-5070-ti",
+      "name": "NVIDIA GeForce RTX 5070 Ti",
+      "shortName": "RTX 5070 Ti",
+      "releaseYear": 2025,
+      "performanceTier": 3,
+      "targetResolution": ["1440p", "4K"],
+      "vram": 16,
+      "vramType": "GDDR7",
+      "tdp": 300,
+      "cudaCores": 8960,
+      "baseClock": 2340,
+      "boostClock": 2452,
+      "memoryBus": 256,
+      "memoryBandwidth": 896,
+      "pciExpress": "5.0 x16",
+      "recommendedPsu": 800,
+      "displayOutputs": {
+        "hdmi": "2.1a",
+        "displayPort": "2.1b",
+        "totalOutputs": 4
+      },
+      "aiSummary": "A RTX 5070 Ti oferece performance próxima à RTX 5080 por um preço consideravelmente menor. Excelente para quem joga em 1440p e quer margem para 4K no futuro. O sweet spot para gamers exigentes sem orçamento ilimitado.",
+      "fps": {
+        "1080p": {
+          "cyberpunk2077Ultra": 210,
+          "fortniteCompetitive": 420,
+          "msfs2024Ultra": 88,
+          "avg": 239
+        },
+        "1440p": {
+          "cyberpunk2077Ultra": 162,
+          "fortniteCompetitive": 370,
+          "msfs2024Ultra": 70,
+          "avg": 201
+        },
+        "4K": {
+          "cyberpunk2077Ultra": 90,
+          "fortniteCompetitive": 240,
+          "msfs2024Ultra": 45,
+          "avg": 125
+        }
+      },
+      "adjacentGpus": {
+        "stepDown": "rtx-5070",
+        "stepUp": "rtx-5080"
+      },
+      "inStock": true,
+      "metaDescription": "RTX 5070 Ti: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+    },
+    {
+      "slug": "rtx-5080",
+      "name": "NVIDIA GeForce RTX 5080",
+      "shortName": "RTX 5080",
+      "releaseYear": 2025,
+      "performanceTier": 4,
+      "targetResolution": ["1440p", "4K"],
+      "vram": 16,
+      "vramType": "GDDR7",
+      "tdp": 360,
+      "cudaCores": 10752,
+      "baseClock": 2295,
+      "boostClock": 2617,
+      "memoryBus": 256,
+      "memoryBandwidth": 960,
+      "pciExpress": "5.0 x16",
+      "recommendedPsu": 850,
+      "displayOutputs": {
+        "hdmi": "2.1b",
+        "displayPort": "2.1b",
+        "totalOutputs": 4
+      },
+      "aiSummary": "Praticamente uma 5090 acessível para quem joga em 4K. Performance excepcional em todos os títulos modernos, ray tracing pesado e Frame Generation múltipla. Para entusiastas que querem o topo sem pagar o premium absoluto da 5090.",
+      "fps": {
+        "1080p": {
+          "cyberpunk2077Ultra": 240,
+          "fortniteCompetitive": 450,
+          "msfs2024Ultra": 100,
+          "avg": 263
+        },
+        "1440p": {
+          "cyberpunk2077Ultra": 195,
+          "fortniteCompetitive": 410,
+          "msfs2024Ultra": 82,
+          "avg": 229
+        },
+        "4K": {
+          "cyberpunk2077Ultra": 110,
+          "fortniteCompetitive": 290,
+          "msfs2024Ultra": 55,
+          "avg": 152
+        }
+      },
+      "adjacentGpus": {
+        "stepDown": "rtx-5070-ti",
+        "stepUp": "rtx-5090"
+      },
+      "inStock": true,
+      "metaDescription": "RTX 5080: specs completos, benchmarks em 1440p/4K e onde comprar mais barato no Brasil."
+    },
+    {
+      "slug": "rtx-5090",
+      "name": "NVIDIA GeForce RTX 5090",
+      "shortName": "RTX 5090",
+      "releaseYear": 2025,
+      "performanceTier": 5,
+      "targetResolution": ["4K"],
+      "vram": 32,
+      "vramType": "GDDR7",
+      "tdp": 575,
+      "cudaCores": 21760,
+      "baseClock": 2017,
+      "boostClock": 2407,
+      "memoryBus": 512,
+      "memoryBandwidth": 1792,
+      "pciExpress": "5.0 x16",
+      "recommendedPsu": 1000,
+      "displayOutputs": {
+        "hdmi": "2.1b",
+        "displayPort": "2.1b",
+        "totalOutputs": 4
+      },
+      "aiSummary": "O topo absoluto da linha Blackwell — 32GB de GDDR7 e 21.760 CUDA cores garantem performance imbatível em 4K, criação de conteúdo profissional e workloads de IA local. Investimento alto, mas para quem quer o máximo possível em 2026 não há concorrência.",
+      "fps": {
+        "1080p": {
+          "cyberpunk2077Ultra": 280,
+          "fortniteCompetitive": 480,
+          "msfs2024Ultra": 110,
+          "avg": 290
+        },
+        "1440p": {
+          "cyberpunk2077Ultra": 240,
+          "fortniteCompetitive": 460,
+          "msfs2024Ultra": 95,
+          "avg": 265
+        },
+        "4K": {
+          "cyberpunk2077Ultra": 145,
+          "fortniteCompetitive": 360,
+          "msfs2024Ultra": 70,
+          "avg": 192
+        }
+      },
+      "adjacentGpus": {
+        "stepDown": "rtx-5080",
+        "stepUp": ""
+      },
+      "inStock": true,
+      "metaDescription": "RTX 5090: specs completos, benchmarks em 4K e onde comprar mais barato no Brasil."
+    }
+  ]
+}

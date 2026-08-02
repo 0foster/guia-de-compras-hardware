@@ -1,0 +1,139 @@
+{
+  "lastGlobalUpdate": "2026-05-10",
+  "currency": "BRL",
+  "links": {
+    "rtx-5050": {
+      "lastUpdated": "2026-05-10",
+      "priceRange": {
+        "min": 1799,
+        "max": 2299
+      },
+      "amazon": {
+        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "displayPrice": 1990,
+        "sellerNote": "Galax 1-Click OC",
+        "inStock": true
+      },
+      "mercadoLivre": {
+        "url": "https://www.mercadolivre.com.br/p/MLB-PLACEHOLDER?affId=SEU-ID",
+        "displayPrice": 1899,
+        "sellerNote": "Pichau Loja Oficial",
+        "inStock": true
+      }
+    },
+    "rtx-5060": {
+      "lastUpdated": "2026-05-10",
+      "priceRange": {
+        "min": 2499,
+        "max": 2999
+      },
+      "amazon": {
+        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "displayPrice": 2690,
+        "sellerNote": "ASUS Dual",
+        "inStock": true
+      },
+      "mercadoLivre": {
+        "url": "https://www.mercadolivre.com.br/p/MLB-PLACEHOLDER?affId=SEU-ID",
+        "displayPrice": 2599,
+        "sellerNote": "KaBuM Loja Oficial",
+        "inStock": true
+      }
+    },
+    "rtx-5060-ti": {
+      "lastUpdated": "2026-05-10",
+      "priceRange": {
+        "min": 3299,
+        "max": 3999
+      },
+      "amazon": {
+        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "displayPrice": 3590,
+        "sellerNote": "MSI Ventus 3X 16GB",
+        "inStock": true
+      },
+      "mercadoLivre": {
+        "url": "https://www.mercadolivre.com.br/p/MLB-PLACEHOLDER?affId=SEU-ID",
+        "displayPrice": 3490,
+        "sellerNote": "Pichau Loja Oficial",
+        "inStock": true
+      }
+    },
+    "rtx-5070": {
+      "lastUpdated": "2026-05-10",
+      "priceRange": {
+        "min": 4299,
+        "max": 4999
+      },
+      "amazon": {
+        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "displayPrice": 4590,
+        "sellerNote": "Gigabyte Gaming OC",
+        "inStock": true
+      },
+      "mercadoLivre": {
+        "url": "https://www.mercadolivre.com.br/p/MLB-PLACEHOLDER?affId=SEU-ID",
+        "displayPrice": 4499,
+        "sellerNote": "Terabyte Shop",
+        "inStock": true
+      }
+    },
+    "rtx-5070-ti": {
+      "lastUpdated": "2026-05-10",
+      "priceRange": {
+        "min": 7490,
+        "max": 8900
+      },
+      "amazon": {
+        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "displayPrice": 7990,
+        "sellerNote": "ASUS ROG",
+        "inStock": true
+      },
+      "mercadoLivre": {
+        "url": "https://www.mercadolivre.com.br/p/MLB-PLACEHOLDER?affId=SEU-ID",
+        "displayPrice": 7490,
+        "sellerNote": "Pichau Loja Oficial",
+        "inStock": true
+      }
+    },
+    "rtx-5080": {
+      "lastUpdated": "2026-05-10",
+      "priceRange": {
+        "min": 9999,
+        "max": 11999
+      },
+      "amazon": {
+        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "displayPrice": 10990,
+        "sellerNote": "ASUS ROG Strix",
+        "inStock": true
+      },
+      "mercadoLivre": {
+        "url": "https://www.mercadolivre.com.br/p/MLB-PLACEHOLDER?affId=SEU-ID",
+        "displayPrice": 10499,
+        "sellerNote": "KaBuM Loja Oficial",
+        "inStock": true
+      }
+    },
+    "rtx-5090": {
+      "lastUpdated": "2026-05-10",
+      "priceRange": {
+        "min": 17999,
+        "max": 22999
+      },
+      "amazon": {
+        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "displayPrice": 19990,
+        "sellerNote": "MSI Suprim Liquid",
+        "inStock": true
+      },
+      "mercadoLivre": {
+        "url": "https://www.mercadolivre.com.br/p/MLB-PLACEHOLDER?affId=SEU-ID",
+        "displayPrice": 18990,
+        "sellerNote": "Pichau Loja Oficial",
+        "inStock": true
+      }
+    }
+  }
+}

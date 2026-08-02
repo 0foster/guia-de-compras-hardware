@@ -1,0 +1,35 @@
+---
+import SearchDropdown from '../search/SearchDropdown.astro';
+---
+
+<header class="sticky top-0 z-40 w-full border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+  <div class="mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-4 px-4 lg:px-6">
+    <!-- Logo -->
+    <a href="/" class="flex shrink-0 items-center gap-2 text-lg font-bold tracking-tight">
+      <span class="text-red-600 dark:text-red-500" style="color: var(--color-brand-red);">Guia de Compras</span>
+      <span class="text-gray-900 dark:text-gray-100">Hardware</span>
+    </a>
+
+    <!-- Search (desktop) -->
+    <div class="hidden sm:block sm:w-64 lg:w-96">
+      <SearchDropdown />
+    </div>
+
+    <!-- Mobile: botão de filtros (visível apenas em mobile) -->
+    <button
+      id="mobile-filter-btn"
+      class="flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 lg:hidden dark:border-gray-700 dark:text-gray-300"
+      aria-label="Abrir filtros"
+    >
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+      </svg>
+      Filtros
+    </button>
+  </div>
+
+  <!-- Search (mobile) -->
+  <div class="border-t border-gray-100 px-4 py-2 sm:hidden dark:border-gray-800">
+    <SearchDropdown />
+  </div>
+</header>

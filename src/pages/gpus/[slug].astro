@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import GpuSpecTable from '../../components/gpu/GpuSpecTable.astro';
+import FpsBenchmark from '../../components/gpu/FpsBenchmark.astro';
+import BuyButton from '../../components/gpu/BuyButton.astro';
+import AdjacentGpus from '../../components/gpu/AdjacentGpus.astro';
+import ProductSchema from '../../components/seo/ProductSchema.astro';
+import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema.astro';
+import { getAllGpus, getAffiliateLinks } from '../../utils/gpu';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = () => {
+  const gpus = getAllGpus();
+  return gpus.map((gpu) => ({
+    params: { slug: gpu.slug },
+    props: { gpu },
+  }));
+};
+
+const { gpu } = Astro.props;
+const links = getAffiliateLinks(gpu.slug);
+---
+
+<BaseLayout
+  title={`${gpu.shortName} — Specs, Benchmarks e Preços | Guia de Compras Hardware`}
+  description={gpu.metaDescription}
+  ogType="product"
+>
+  <ProductSchema slot="head" {gpu} {links} />
+  <BreadcrumbSchema
+    slot="head"
+    trail={[
+      { name: 'Home', url: '/' },
+      { name: gpu.shortName, url: Astro.url.pathname },
+    ]}
+  />
+
+  <div class="flex min-h-screen flex-col">
+    <Header />
+
+    <main class="mx-auto w-full max-w-4xl flex-1 px-4 py-8 lg:px-6">
+      <!-- Breadcrumb -->
+      <nav class="mb-6 text-sm text-gray-500 dark:text-gray-400">
+        <a href="/" class="hover:text-gray-700 dark:hover:text-gray-200">Home</a>
+        <span class="mx-2">/</span>
+        <span class="text-gray-900 dark:text-gray-100">{gpu.shortName}</span>
+      </nav>
+
+      <!-- Hero -->
+      <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-start">
+        <!-- Image placeholder -->
+        <div class="flex h-64 w-full shrink-0 items-center justify-center rounded-xl bg-gray-100 lg:h-72 lg:w-80 dark:bg-gray-800">
+          <svg class="h-24 w-24 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+          </svg>
+        </div>
+
+        <div class="flex-1">
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">{gpu.name}</h1>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+              {gpu.vram} GB {gpu.vramType}
+            </span>
+            {gpu.targetResolution.map((res) => (
+              <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                {res}
+              </span>
+            ))}
+          </div>
+
+          <!-- Buy buttons -->
+          <div class="mt-6">
+            <BuyButton amazon={links?.amazon} mercadoLivre={links?.mercadoLivre} />
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Summary -->
+      <section class="mb-8">
+        <h2 class="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100">Vale a Pena?</h2>
+        <div class="rounded-xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-900">
+          <p class="leading-relaxed text-gray-700 dark:text-gray-300">{gpu.aiSummary}</p>
+        </div>
+      </section>
+
+      <!-- Benchmarks -->
+      <section class="mb-8">
+        <h2 class="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100">Benchmarks por Resolução</h2>
+        <FpsBenchmark fps={gpu.fps} />
+      </section>
+
+      <!-- Specs -->
+      <section class="mb-8">
+        <h2 class="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100">Especificações Técnicas</h2>
+        <GpuSpecTable
+          vram={gpu.vram}
+          vramType={gpu.vramType}
+          tdp={gpu.tdp}
+          cudaCores={gpu.cudaCores}
+          baseClock={gpu.baseClock}
+          boostClock={gpu.boostClock}
+          memoryBus={gpu.memoryBus}
+          memoryBandwidth={gpu.memoryBandwidth}
+          pciExpress={gpu.pciExpress}
+          recommendedPsu={gpu.recommendedPsu}
+          displayOutputs={gpu.displayOutputs}
+        />
+      </section>
+
+      <!-- Adjacent GPUs -->
+      <section class="mb-8">
+        <h2 class="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100">Compare</h2>
+        <AdjacentGpus stepDown={gpu.adjacentGpus.stepDown} stepUp={gpu.adjacentGpus.stepUp} />
+      </section>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>

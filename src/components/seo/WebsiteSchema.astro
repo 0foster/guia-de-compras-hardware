@@ -1,0 +1,17 @@
+---
+import JsonLd from './JsonLd.astro';
+
+const site = Astro.site?.toString() ?? '';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Guia de Compras Hardware',
+  url: site,
+  inLanguage: 'pt-BR',
+  description:
+    'Encontre a placa de vídeo ideal para você. Specs, benchmarks e os melhores preços no Brasil.',
+};
+---
+
+<JsonLd schema={schema} />

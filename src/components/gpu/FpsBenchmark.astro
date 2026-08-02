@@ -1,0 +1,99 @@
+---
+interface FpsData {
+  cyberpunk2077Ultra: number;
+  fortniteCompetitive: number;
+  msfs2024Ultra: number;
+  avg: number;
+}
+
+interface Props {
+  fps: {
+    '1080p': FpsData;
+    '1440p': FpsData;
+    '4K': FpsData;
+  };
+}
+
+const { fps } = Astro.props;
+
+const resolutions = ['1080p', '1440p', '4K'] as const;
+const games = [
+  { key: 'cyberpunk2077Ultra' as const, label: 'Cyberpunk 2077 (Ultra)' },
+  { key: 'fortniteCompetitive' as const, label: 'Fortnite (Competitive)' },
+  { key: 'msfs2024Ultra' as const, label: 'MSFS 2024 (Ultra)' },
+];
+
+function fpsColor(value: number): string {
+  if (value >= 144) return 'text-green-500';
+  if (value >= 60) return 'text-yellow-500';
+  return 'text-red-500';
+}
+
+function fpsBarWidth(value: number): number {
+  return Math.min((value / 400) * 100, 100);
+}
+---
+
+<div>
+  <!-- Tab navigation (CSS-only via radio buttons) -->
+  <div class="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-800">
+    {resolutions.map((res, i) => (
+      <label class="flex-1 cursor-pointer">
+        <input
+          type="radio"
+          name="fps-tab"
+          value={res}
+          checked={i === 1}
+          class="peer sr-only"
+        />
+        <div class="rounded-md py-2 text-center text-sm font-medium text-gray-500 transition-colors peer-checked:bg-white peer-checked:text-gray-900 peer-checked:shadow-sm dark:text-gray-400 dark:peer-checked:bg-gray-700 dark:peer-checked:text-gray-100">
+          {res}
+        </div>
+      </label>
+    ))}
+  </div>
+
+  <!-- Tab panels -->
+  {resolutions.map((res, i) => (
+    <div
+      class="fps-panel mt-4 space-y-4"
+      data-resolution={res}
+      style={i !== 1 ? 'display: none;' : ''}
+    >
+      {games.map((game) => {
+        const value = fps[res][game.key];
+        return (
+          <div>
+            <div class="mb-1 flex items-center justify-between">
+              <span class="text-sm text-gray-600 dark:text-gray-400">{game.label}</span>
+              <span class={`text-sm font-bold ${fpsColor(value)}`}>{value} FPS</span>
+            </div>
+            <div class="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+              <div
+                class="h-full rounded-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
+                style={`width: ${fpsBarWidth(value)}%`}
+              />
+            </div>
+          </div>
+        );
+      })}
+      <div class="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 dark:bg-gray-800/50">
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">FPS Médio</span>
+        <span class={`text-lg font-bold ${fpsColor(fps[res].avg)}`}>{fps[res].avg} FPS</span>
+      </div>
+    </div>
+  ))}
+</div>
+
+<script>
+  document.querySelectorAll('input[name="fps-tab"]').forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      const target = e.target as HTMLInputElement;
+      const panels = document.querySelectorAll('.fps-panel');
+      panels.forEach((panel) => {
+        const el = panel as HTMLElement;
+        el.style.display = el.dataset.resolution === target.value ? '' : 'none';
+      });
+    });
+  });
+</script>
