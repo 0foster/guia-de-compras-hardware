@@ -18,22 +18,20 @@ const searchData = gpus.map((gpu) => {
 ---
 
 <!-- Search wrapper (relative container for dropdown positioning) -->
-<div class="search-wrapper relative w-full" id="search-wrapper">
+<div class="search-wrapper relative w-full">
   <div class="relative">
     <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
     </svg>
     <input
       type="text"
-      id="search-input"
       placeholder="Buscar placa de vídeo..."
       autocomplete="off"
-      class="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pl-10 pr-10 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:border-[var(--color-brand-red)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-red)] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-500"
+      class="search-input w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pl-10 pr-10 text-base sm:text-sm text-gray-900 placeholder-gray-400 transition-colors focus:border-[var(--color-brand-red)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-red)] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-500"
     />
     <!-- Clear button -->
     <button
-      id="search-clear"
-      class="absolute right-3 top-1/2 hidden h-4 w-4 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+      class="search-clear absolute right-3 top-1/2 hidden h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
       aria-label="Limpar busca"
     >
       <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,13 +42,12 @@ const searchData = gpus.map((gpu) => {
 
   <!-- Dropdown results -->
   <div
-    id="search-dropdown"
-    class="absolute top-full left-0 z-50 mt-1 hidden w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900"
+    class="search-dropdown absolute top-full left-0 z-50 mt-1 hidden w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900"
   >
-    <ul id="search-results" class="max-h-80 overflow-y-auto py-1" role="listbox">
+    <ul class="search-results max-h-72 sm:max-h-80 overflow-y-auto py-1" role="listbox">
       <!-- Results injected by JS -->
     </ul>
-    <div id="search-empty" class="hidden px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+    <div class="search-empty hidden px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
       Nenhuma placa encontrada.
     </div>
   </div>
@@ -74,158 +71,161 @@ const searchData = gpus.map((gpu) => {
   }
 
   function initSearch() {
-    const input = document.getElementById('search-input') as HTMLInputElement | null;
-    const clearBtn = document.getElementById('search-clear');
-    const dropdown = document.getElementById('search-dropdown')!;
-    const resultsList = document.getElementById('search-results')!;
-    const emptyMsg = document.getElementById('search-empty')!;
-
-    if (!input || !dropdown || !resultsList || !emptyMsg) return;
-
+    const wrappers = document.querySelectorAll<HTMLElement>('.search-wrapper');
     const gpus: GpuSearchEntry[] = (window as any).__GPU_SEARCH_DATA__ || [];
-    let activeIndex = -1;
-    let debounceTimer: ReturnType<typeof setTimeout>;
 
-    function showDropdown() {
-      dropdown.classList.remove('hidden');
-    }
+    wrappers.forEach((wrapper) => {
+      const input = wrapper.querySelector<HTMLInputElement>('.search-input');
+      const clearBtn = wrapper.querySelector<HTMLElement>('.search-clear');
+      const dropdown = wrapper.querySelector<HTMLElement>('.search-dropdown');
+      const resultsList = wrapper.querySelector<HTMLElement>('.search-results');
+      const emptyMsg = wrapper.querySelector<HTMLElement>('.search-empty');
 
-    function hideDropdown() {
-      dropdown.classList.add('hidden');
-      activeIndex = -1;
-    }
+      if (!input || !dropdown || !resultsList || !emptyMsg) return;
 
-    function renderResults(query: string) {
-      const results = searchGpus(query, gpus);
-      resultsList.innerHTML = '';
-      activeIndex = -1;
+      let activeIndex = -1;
+      let debounceTimer: ReturnType<typeof setTimeout>;
 
-      if (query.trim() === '') {
-        hideDropdown();
-        return;
+      function showDropdown() {
+        dropdown!.classList.remove('hidden');
       }
 
-      if (results.length === 0) {
-        emptyMsg.classList.remove('hidden');
-        resultsList.classList.add('hidden');
-        showDropdown();
-        return;
+      function hideDropdown() {
+        dropdown!.classList.add('hidden');
+        activeIndex = -1;
       }
 
-      emptyMsg.classList.add('hidden');
-      resultsList.classList.remove('hidden');
+      function renderResults(query: string) {
+        const results = searchGpus(query, gpus);
+        resultsList!.innerHTML = '';
+        activeIndex = -1;
 
-      results.forEach((result, index) => {
-        const li = document.createElement('li');
-        li.role = 'option';
-        li.dataset.index = String(index);
-        li.className =
-          'search-result flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800';
+        if (query.trim() === '') {
+          hideDropdown();
+          return;
+        }
 
-        const priceHtml = result.gpu.priceMin
-          ? `<span class="text-xs font-semibold text-gray-900 dark:text-gray-100">A partir de ${formatBRL(result.gpu.priceMin)}</span>`
-          : `<span class="text-xs text-gray-400">Preço indisponível</span>`;
+        if (results.length === 0) {
+          emptyMsg!.classList.remove('hidden');
+          resultsList!.classList.add('hidden');
+          showDropdown();
+          return;
+        }
 
-        const resolutionBadges = result.gpu.targetResolution
-          .map(
-            (res) =>
-              `<span class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400">${res}</span>`,
-          )
-          .join('');
+        emptyMsg!.classList.add('hidden');
+        resultsList!.classList.remove('hidden');
 
-        li.innerHTML = `
-          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
-            <svg class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">${result.gpu.shortName}</span>
-              <span class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400">${result.gpu.vram} GB</span>
-              ${resolutionBadges}
+        results.forEach((result, index) => {
+          const li = document.createElement('li');
+          li.role = 'option';
+          li.dataset.index = String(index);
+          li.className =
+            'search-result flex cursor-pointer items-center gap-3 px-4 py-3 sm:py-2.5 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800';
+
+          const priceHtml = result.gpu.priceMin
+            ? `<span class="text-xs font-semibold text-gray-900 dark:text-gray-100">A partir de ${formatBRL(result.gpu.priceMin)}</span>`
+            : `<span class="text-xs text-gray-400">Preço indisponível</span>`;
+
+          const resolutionBadges = result.gpu.targetResolution
+            .map(
+              (res) =>
+                `<span class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400">${res}</span>`,
+            )
+            .join('');
+
+          li.innerHTML = `
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+              <svg class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+              </svg>
             </div>
-            ${priceHtml}
-          </div>
-        `;
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">${result.gpu.shortName}</span>
+                <span class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400">${result.gpu.vram} GB</span>
+                ${resolutionBadges}
+              </div>
+              ${priceHtml}
+            </div>
+          `;
 
-        li.addEventListener('click', () => {
-          window.location.href = `/gpus/${result.gpu.slug}`;
+          li.addEventListener('click', () => {
+            window.location.href = `/gpus/${result.gpu.slug}`;
+          });
+
+          resultsList!.appendChild(li);
         });
 
-        resultsList.appendChild(li);
+        showDropdown();
+      }
+
+      function setActiveResult(index: number) {
+        const items = resultsList!.querySelectorAll('.search-result');
+        items.forEach((item) => item.classList.remove('bg-gray-50', 'dark:bg-gray-800'));
+
+        if (index >= 0 && index < items.length) {
+          activeIndex = index;
+          items[index].classList.add('bg-gray-50', 'dark:bg-gray-800');
+          items[index].scrollIntoView({ block: 'nearest' });
+        }
+      }
+
+      // Input event with debounce
+      input.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        const query = input.value;
+
+        // Toggle clear button
+        if (clearBtn) {
+          clearBtn.classList.toggle('hidden', query.length === 0);
+          clearBtn.classList.toggle('flex', query.length > 0);
+        }
+
+        debounceTimer = setTimeout(() => renderResults(query), 150);
       });
 
-      showDropdown();
-    }
+      // Keyboard navigation
+      input.addEventListener('keydown', (e) => {
+        const items = resultsList!.querySelectorAll('.search-result');
+        if (!items.length) return;
 
-    function setActiveResult(index: number) {
-      const items = resultsList.querySelectorAll('.search-result');
-      items.forEach((item) => item.classList.remove('bg-gray-50', 'dark:bg-gray-800'));
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          setActiveResult(activeIndex < items.length - 1 ? activeIndex + 1 : 0);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setActiveResult(activeIndex > 0 ? activeIndex - 1 : items.length - 1);
+        } else if (e.key === 'Enter' && activeIndex >= 0) {
+          e.preventDefault();
+          (items[activeIndex] as HTMLElement).click();
+        } else if (e.key === 'Escape') {
+          hideDropdown();
+          input.blur();
+        }
+      });
 
-      if (index >= 0 && index < items.length) {
-        activeIndex = index;
-        items[index].classList.add('bg-gray-50', 'dark:bg-gray-800');
-        items[index].scrollIntoView({ block: 'nearest' });
-      }
-    }
+      // Focus shows results if there's a query
+      input.addEventListener('focus', () => {
+        if (input.value.trim()) {
+          renderResults(input.value);
+        }
+      });
 
-    // Input event with debounce
-    input.addEventListener('input', () => {
-      clearTimeout(debounceTimer);
-      const query = input.value;
+      // Click outside closes this specific dropdown
+      document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target as Node)) {
+          hideDropdown();
+        }
+      });
 
-      // Toggle clear button
-      if (clearBtn) {
-        clearBtn.classList.toggle('hidden', query.length === 0);
-        clearBtn.classList.toggle('flex', query.length > 0);
-      }
-
-      debounceTimer = setTimeout(() => renderResults(query), 150);
-    });
-
-    // Keyboard navigation
-    input.addEventListener('keydown', (e) => {
-      const items = resultsList.querySelectorAll('.search-result');
-      if (!items.length) return;
-
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setActiveResult(activeIndex < items.length - 1 ? activeIndex + 1 : 0);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setActiveResult(activeIndex > 0 ? activeIndex - 1 : items.length - 1);
-      } else if (e.key === 'Enter' && activeIndex >= 0) {
-        e.preventDefault();
-        (items[activeIndex] as HTMLElement).click();
-      } else if (e.key === 'Escape') {
+      // Clear button
+      clearBtn?.addEventListener('click', () => {
+        input.value = '';
+        clearBtn.classList.add('hidden');
+        clearBtn.classList.remove('flex');
         hideDropdown();
-        input.blur();
-      }
-    });
-
-    // Focus shows results if there's a query
-    input.addEventListener('focus', () => {
-      if (input.value.trim()) {
-        renderResults(input.value);
-      }
-    });
-
-    // Click outside closes dropdown
-    document.addEventListener('click', (e) => {
-      const wrapper = document.getElementById('search-wrapper');
-      if (wrapper && !wrapper.contains(e.target as Node)) {
-        hideDropdown();
-      }
-    });
-
-    // Clear button
-    clearBtn?.addEventListener('click', () => {
-      input.value = '';
-      clearBtn.classList.add('hidden');
-      clearBtn.classList.remove('flex');
-      hideDropdown();
-      input.focus();
+        input.focus();
+      });
     });
   }
 

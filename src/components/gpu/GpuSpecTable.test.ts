@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import * as cheerio from 'cheerio';
 import GpuSpecTable from './GpuSpecTable.astro';
 
 const defaultProps = {

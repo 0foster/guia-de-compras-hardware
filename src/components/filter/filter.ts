@@ -26,7 +26,7 @@ function clamp(value: number, min: number, max: number): number {
 function initFilters() {
   const cards = document.querySelectorAll<HTMLElement>('.gpu-card');
   const filterInputs = document.querySelectorAll<HTMLInputElement>('[data-filter]');
-  const clearBtn = document.getElementById('clear-filters');
+  const clearBtns = document.querySelectorAll<HTMLButtonElement>('[data-filter-role="clear-filters"]');
   const sidebarToggle = document.getElementById('sidebar-toggle');
   const sidebar = document.getElementById('sidebar');
   const mobileFilterBtn = document.getElementById('mobile-filter-btn');
@@ -34,44 +34,75 @@ function initFilters() {
   const mobileOverlay = document.getElementById('mobile-overlay');
   const mobileClose = document.getElementById('mobile-drawer-close');
 
-  const minHandle = document.getElementById('price-min-handle') as HTMLInputElement | null;
-  const maxHandle = document.getElementById('price-max-handle') as HTMLInputElement | null;
-  const minInput = document.getElementById('price-min-input') as HTMLInputElement | null;
-  const maxInput = document.getElementById('price-max-input') as HTMLInputElement | null;
-  const rangeFill = document.getElementById('price-range-fill') as HTMLElement | null;
+  const minHandles = document.querySelectorAll<HTMLInputElement>('[data-filter-role="min-handle"]');
+  const maxHandles = document.querySelectorAll<HTMLInputElement>('[data-filter-role="max-handle"]');
+  const minInputs = document.querySelectorAll<HTMLInputElement>('[data-filter-role="min-input"]');
+  const maxInputs = document.querySelectorAll<HTMLInputElement>('[data-filter-role="max-input"]');
+  const rangeFills = document.querySelectorAll<HTMLElement>('[data-filter-role="price-range-fill"]');
 
   function updateRangeFill() {
-    if (!minHandle || !maxHandle || !rangeFill) return;
-    const min = parseFloat(minHandle.value);
-    const max = parseFloat(maxHandle.value);
-    rangeFill.style.left = `${(min / PRICE_MAX_BOUND) * 100}%`;
-    rangeFill.style.right = `${100 - (max / PRICE_MAX_BOUND) * 100}%`;
+    if (!minHandles.length || !maxHandles.length) return;
+    const min = parseFloat(minHandles[0].value);
+    const max = parseFloat(maxHandles[0].value);
+    rangeFills.forEach((fill) => {
+      fill.style.left = `${(min / PRICE_MAX_BOUND) * 100}%`;
+      fill.style.right = `${100 - (max / PRICE_MAX_BOUND) * 100}%`;
+    });
   }
 
-  function syncHandlesToInputs() {
-    if (!minHandle || !maxHandle || !minInput || !maxInput) return;
-    const min = parseFloat(minHandle.value);
-    const max = parseFloat(maxHandle.value);
-    if (document.activeElement !== minInput) {
-      minInput.value = min === PRICE_MIN_BOUND ? '' : formatBRL(min);
-    }
-    if (document.activeElement !== maxInput) {
-      maxInput.value = max === PRICE_MAX_BOUND ? '' : formatBRL(max);
-    }
+  function syncHandlesToInputs(sourceHandle?: HTMLInputElement) {
+    if (!minHandles.length || !maxHandles.length || !minInputs.length || !maxInputs.length) return;
+    const min = parseFloat((sourceHandle && sourceHandle.dataset.filterRole === 'min-handle' ? sourceHandle : minHandles[0]).value);
+    const max = parseFloat((sourceHandle && sourceHandle.dataset.filterRole === 'max-handle' ? sourceHandle : maxHandles[0]).value);
+
+    minHandles.forEach((h) => {
+      if (h !== document.activeElement && h !== sourceHandle) h.value = String(min);
+    });
+    maxHandles.forEach((h) => {
+      if (h !== document.activeElement && h !== sourceHandle) h.value = String(max);
+    });
+
+    minInputs.forEach((inp) => {
+      if (document.activeElement !== inp) {
+        inp.value = min === PRICE_MIN_BOUND ? '' : formatBRL(min);
+      }
+    });
+    maxInputs.forEach((inp) => {
+      if (document.activeElement !== inp) {
+        inp.value = max === PRICE_MAX_BOUND ? '' : formatBRL(max);
+      }
+    });
   }
 
-  function syncInputsToHandles() {
-    if (!minHandle || !maxHandle || !minInput || !maxInput) return;
-    const minParsed = parseBRL(minInput.value);
-    const maxParsed = parseBRL(maxInput.value);
+  function syncInputsToHandles(sourceInput?: HTMLInputElement) {
+    if (!minHandles.length || !maxHandles.length || !minInputs.length || !maxInputs.length) return;
+    const targetMinInp = sourceInput && sourceInput.dataset.filterRole === 'min-input' ? sourceInput : minInputs[0];
+    const targetMaxInp = sourceInput && sourceInput.dataset.filterRole === 'max-input' ? sourceInput : maxInputs[0];
+
+    const minParsed = parseBRL(targetMinInp.value);
+    const maxParsed = parseBRL(targetMaxInp.value);
     let min = minParsed === null ? PRICE_MIN_BOUND : clamp(minParsed, PRICE_MIN_BOUND, PRICE_MAX_BOUND);
     let max = maxParsed === null ? PRICE_MAX_BOUND : clamp(maxParsed, PRICE_MIN_BOUND, PRICE_MAX_BOUND);
     if (min > max) {
       [min, max] = [max, min];
     }
-    minHandle.value = String(min);
-    maxHandle.value = String(max);
+    minHandles.forEach((h) => (h.value = String(min)));
+    maxHandles.forEach((h) => (h.value = String(max)));
     updateRangeFill();
+  }
+
+  function syncFilterInput(changedInput: HTMLInputElement) {
+    const filterType = changedInput.dataset.filter;
+    const value = changedInput.value;
+    filterInputs.forEach((input) => {
+      if (input !== changedInput && input.dataset.filter === filterType) {
+        if (input.type === 'checkbox' && input.value === value) {
+          input.checked = changedInput.checked;
+        } else if (input.type === 'radio' && input.value === value) {
+          input.checked = changedInput.checked;
+        }
+      }
+    });
   }
 
   function applyFilters() {
@@ -85,12 +116,14 @@ function initFilters() {
         }
       } else if (input.checked) {
         if (!active[filterType]) active[filterType] = [];
-        active[filterType].push(input.value);
+        if (!active[filterType].includes(input.value)) {
+          active[filterType].push(input.value);
+        }
       }
     });
 
-    const priceMin = minHandle ? parseFloat(minHandle.value) : PRICE_MIN_BOUND;
-    const priceMax = maxHandle ? parseFloat(maxHandle.value) : PRICE_MAX_BOUND;
+    const priceMin = minHandles[0] ? parseFloat(minHandles[0].value) : PRICE_MIN_BOUND;
+    const priceMax = maxHandles[0] ? parseFloat(maxHandles[0].value) : PRICE_MAX_BOUND;
     const priceFilterActive = priceMin > PRICE_MIN_BOUND || priceMax < PRICE_MAX_BOUND;
 
     cards.forEach((card) => {
@@ -131,48 +164,61 @@ function initFilters() {
   }
 
   filterInputs.forEach((input) => {
-    input.addEventListener('change', applyFilters);
+    input.addEventListener('change', (e) => {
+      syncFilterInput(e.currentTarget as HTMLInputElement);
+      applyFilters();
+    });
   });
 
   // Slider handles
-  minHandle?.addEventListener('input', () => {
-    if (!minHandle || !maxHandle) return;
-    const min = parseFloat(minHandle.value);
-    const max = parseFloat(maxHandle.value);
-    if (min > max) {
-      minHandle.value = String(max);
-    }
-    updateRangeFill();
-    syncHandlesToInputs();
-    applyFilters();
+  minHandles.forEach((handle) => {
+    handle.addEventListener('input', (e) => {
+      if (!minHandles.length || !maxHandles.length) return;
+      const target = e.currentTarget as HTMLInputElement;
+      const min = parseFloat(target.value);
+      const max = parseFloat(maxHandles[0].value);
+      if (min > max) {
+        target.value = String(max);
+      }
+      updateRangeFill();
+      syncHandlesToInputs(target);
+      applyFilters();
+    });
   });
 
-  maxHandle?.addEventListener('input', () => {
-    if (!minHandle || !maxHandle) return;
-    const min = parseFloat(minHandle.value);
-    const max = parseFloat(maxHandle.value);
-    if (max < min) {
-      maxHandle.value = String(min);
-    }
-    updateRangeFill();
-    syncHandlesToInputs();
-    applyFilters();
+  maxHandles.forEach((handle) => {
+    handle.addEventListener('input', (e) => {
+      if (!minHandles.length || !maxHandles.length) return;
+      const target = e.currentTarget as HTMLInputElement;
+      const min = parseFloat(minHandles[0].value);
+      const max = parseFloat(target.value);
+      if (max < min) {
+        target.value = String(min);
+      }
+      updateRangeFill();
+      syncHandlesToInputs(target);
+      applyFilters();
+    });
   });
 
   // Number inputs (commit on change/blur, not while typing)
   function commitInput(this: HTMLInputElement) {
-    syncInputsToHandles();
+    syncInputsToHandles(this);
     syncHandlesToInputs();
     applyFilters();
   }
-  minInput?.addEventListener('change', commitInput);
-  maxInput?.addEventListener('change', commitInput);
-  minInput?.addEventListener('blur', commitInput);
-  maxInput?.addEventListener('blur', commitInput);
+  minInputs.forEach((inp) => {
+    inp.addEventListener('change', commitInput);
+    inp.addEventListener('blur', commitInput);
+  });
+  maxInputs.forEach((inp) => {
+    inp.addEventListener('change', commitInput);
+    inp.addEventListener('blur', commitInput);
+  });
 
   // Allow Enter to commit immediately
-  [minInput, maxInput].forEach((el) => {
-    el?.addEventListener('keydown', (e) => {
+  [...minInputs, ...maxInputs].forEach((el) => {
+    el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
         (e.currentTarget as HTMLInputElement).blur();
@@ -180,20 +226,22 @@ function initFilters() {
     });
   });
 
-  clearBtn?.addEventListener('click', () => {
-    filterInputs.forEach((input) => {
-      if (input.type === 'radio') {
-        input.checked = input.value === '0';
-      } else {
-        input.checked = false;
-      }
+  clearBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterInputs.forEach((input) => {
+        if (input.type === 'radio') {
+          input.checked = input.value === '0';
+        } else {
+          input.checked = false;
+        }
+      });
+      minHandles.forEach((h) => (h.value = String(PRICE_MIN_BOUND)));
+      maxHandles.forEach((h) => (h.value = String(PRICE_MAX_BOUND)));
+      minInputs.forEach((inp) => (inp.value = ''));
+      maxInputs.forEach((inp) => (inp.value = ''));
+      updateRangeFill();
+      applyFilters();
     });
-    if (minHandle) minHandle.value = String(PRICE_MIN_BOUND);
-    if (maxHandle) maxHandle.value = String(PRICE_MAX_BOUND);
-    if (minInput) minInput.value = '';
-    if (maxInput) maxInput.value = '';
-    updateRangeFill();
-    applyFilters();
   });
 
   // Initial render
