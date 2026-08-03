@@ -1,6 +1,6 @@
 ---
 import { getAllGpus, getAffiliateLinks } from '../../utils/gpu';
-import { formatBRL } from '../../utils/format';
+
 
 const gpus = getAllGpus();
 const searchData = gpus.map((gpu) => {
@@ -76,9 +76,9 @@ const searchData = gpus.map((gpu) => {
   function initSearch() {
     const input = document.getElementById('search-input') as HTMLInputElement | null;
     const clearBtn = document.getElementById('search-clear');
-    const dropdown = document.getElementById('search-dropdown');
-    const resultsList = document.getElementById('search-results');
-    const emptyMsg = document.getElementById('search-empty');
+    const dropdown = document.getElementById('search-dropdown')!;
+    const resultsList = document.getElementById('search-results')!;
+    const emptyMsg = document.getElementById('search-empty')!;
 
     if (!input || !dropdown || !resultsList || !emptyMsg) return;
 

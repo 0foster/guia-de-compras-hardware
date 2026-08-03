@@ -9,17 +9,19 @@ import AdjacentGpus from '../../components/gpu/AdjacentGpus.astro';
 import ProductSchema from '../../components/seo/ProductSchema.astro';
 import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema.astro';
 import { getAllGpus, getAffiliateLinks } from '../../utils/gpu';
-import type { GetStaticPaths } from 'astro';
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
 
-export const getStaticPaths: GetStaticPaths = () => {
+export const getStaticPaths = (() => {
   const gpus = getAllGpus();
   return gpus.map((gpu) => ({
     params: { slug: gpu.slug },
     props: { gpu },
   }));
-};
+}) satisfies GetStaticPaths;
 
-const { gpu } = Astro.props;
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { gpu } = Astro.props as Props;
 const links = getAffiliateLinks(gpu.slug);
 ---
 
