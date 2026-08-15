@@ -1,5 +1,9 @@
 ---
+interface Props {
+  namePrefix?: string;
+}
 
+const { namePrefix = 'default' } = Astro.props;
 ---
 
 <div class="space-y-6">
@@ -8,8 +12,8 @@
     <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Resolução</h3>
     <div class="space-y-2">
       {['1080p', '1440p', '4K'].map((res) => (
-        <label class="flex cursor-pointer items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-          <input type="checkbox" value={res} data-filter="resolution" class="h-4 w-4 rounded border-gray-300 accent-[var(--color-brand-red)] dark:border-gray-600" />
+        <label class="flex cursor-pointer items-center gap-3 py-1 sm:py-0 text-sm text-gray-700 dark:text-gray-300">
+          <input type="checkbox" value={res} data-filter="resolution" class="h-5 w-5 sm:h-4 sm:w-4 rounded border-gray-300 accent-[var(--color-brand-red)] dark:border-gray-600" />
           {res}
         </label>
       ))}
@@ -22,10 +26,10 @@
 
     <div class="price-slider relative mt-2 mb-1 h-6 px-2">
       <div class="absolute top-1/2 left-2 right-2 h-1 -translate-y-1/2 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div id="price-range-fill" class="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-[var(--color-brand-red)]" style="left: 0%; right: 0%;"></div>
+      <div data-filter-role="price-range-fill" class="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-[var(--color-brand-red)]" style="left: 0%; right: 0%;"></div>
       <input
         type="range"
-        id="price-min-handle"
+        data-filter-role="min-handle"
         min="0"
         max="200000"
         step="100"
@@ -35,7 +39,7 @@
       />
       <input
         type="range"
-        id="price-max-handle"
+        data-filter-role="max-handle"
         min="0"
         max="200000"
         step="100"
@@ -47,25 +51,25 @@
 
     <div class="mt-4 grid grid-cols-2 gap-3">
       <div>
-        <label for="price-min-input" class="block text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Vlr. Mínimo</label>
+        <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Vlr. Mínimo</label>
         <input
           type="text"
-          id="price-min-input"
+          data-filter-role="min-input"
           inputmode="decimal"
           placeholder="R$ 0,00"
           autocomplete="off"
-          class="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:border-[var(--color-brand-red)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-red)] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+          class="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-base sm:text-sm text-gray-900 focus:border-[var(--color-brand-red)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-red)] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
         />
       </div>
       <div>
-        <label for="price-max-input" class="block text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Vlr. Máximo</label>
+        <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Vlr. Máximo</label>
         <input
           type="text"
-          id="price-max-input"
+          data-filter-role="max-input"
           inputmode="decimal"
           placeholder="R$ 200.000,00"
           autocomplete="off"
-          class="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:border-[var(--color-brand-red)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-red)] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+          class="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-base sm:text-sm text-gray-900 focus:border-[var(--color-brand-red)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-red)] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
         />
       </div>
     </div>
@@ -81,8 +85,8 @@
         { label: '12 GB+', value: '12' },
         { label: '16 GB+', value: '16' },
       ].map((opt) => (
-        <label class="flex cursor-pointer items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-          <input type="radio" name="vram" value={opt.value} data-filter="vram" class="h-4 w-4 border-gray-300 accent-[var(--color-brand-red)] dark:border-gray-600" checked={opt.value === '0'} />
+        <label class="flex cursor-pointer items-center gap-3 py-1 sm:py-0 text-sm text-gray-700 dark:text-gray-300">
+          <input type="radio" name={`vram-${namePrefix}`} value={opt.value} data-filter="vram" class="h-5 w-5 sm:h-4 sm:w-4 border-gray-300 accent-[var(--color-brand-red)] dark:border-gray-600" checked={opt.value === '0'} />
           {opt.label}
         </label>
       ))}
@@ -91,8 +95,8 @@
 
   <!-- Botão limpar filtros -->
   <button
-    id="clear-filters"
-    class="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+    data-filter-role="clear-filters"
+    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 sm:py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
   >
     Limpar filtros
   </button>
