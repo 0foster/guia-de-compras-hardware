@@ -3,15 +3,15 @@
   "currency": "BRL",
   "links": {
     "rtx-5050": {
-      "lastUpdated": "2026-05-10",
+      "lastUpdated": "2026-08-15",
       "priceRange": {
         "min": 1799,
         "max": 2299
       },
       "amazon": {
-        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "url": "https://www.amazon.com.br/dp/B0F6NLT7M4?tag=gmazer-20",
         "displayPrice": 1990,
-        "sellerNote": "Galax 1-Click OC",
+        "sellerNote": "Gigabyte WINDFORCE OC",
         "inStock": true
       },
       "mercadoLivre": {
