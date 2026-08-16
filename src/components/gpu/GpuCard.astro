@@ -1,5 +1,4 @@
 ---
-import { formatBRL } from '../../utils/format';
 
 interface Props {
   slug: string;
@@ -9,7 +8,6 @@ interface Props {
   aiSummary: string;
   fpsAvg1440p: number;
   priceMin?: number;
-  priceMax?: number;
   inStock?: boolean;
 }
 
@@ -21,7 +19,6 @@ const {
   aiSummary,
   fpsAvg1440p,
   priceMin,
-  priceMax,
   inStock = true,
 } = Astro.props;
 ---
@@ -67,12 +64,10 @@ const {
 
     <!-- Preço + CTA -->
     <div class="mt-auto pt-4">
-      {priceMin && priceMax ? (
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-          A partir de <span class="font-bold text-gray-900 dark:text-gray-100">{formatBRL(priceMin)}</span>
-        </p>
+      {inStock ? (
+        <p class="text-sm font-medium text-[var(--color-brand-red)]">Consultar preço →</p>
       ) : (
-        <p class="text-sm text-gray-500 dark:text-gray-400">Preço indisponível</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Indisponível</p>
       )}
       <a
         href={`/gpus/${slug}`}
