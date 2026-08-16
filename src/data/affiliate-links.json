@@ -1,5 +1,5 @@
 {
-  "lastGlobalUpdate": "2026-05-10",
+  "lastGlobalUpdate": "2026-08-15",
   "currency": "BRL",
   "links": {
     "rtx-5050": {
@@ -9,9 +9,9 @@
         "max": 2299
       },
       "amazon": {
-        "url": "https://www.amazon.com.br/dp/B0F6NLT7M4?tag=gmazer-20",
+        "url": "https://link.amazon/B02wT3XAC",
         "displayPrice": 1990,
-        "sellerNote": "Gigabyte WINDFORCE OC",
+        "sellerNote": "Galax 1-Click OC",
         "inStock": true
       },
       "mercadoLivre": {
@@ -22,13 +22,13 @@
       }
     },
     "rtx-5060": {
-      "lastUpdated": "2026-05-10",
+      "lastUpdated": "2026-08-15",
       "priceRange": {
         "min": 2499,
         "max": 2999
       },
       "amazon": {
-        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "url": "https://link.amazon/B05uNTnpx",
         "displayPrice": 2690,
         "sellerNote": "ASUS Dual",
         "inStock": true
@@ -41,13 +41,13 @@
       }
     },
     "rtx-5060-ti": {
-      "lastUpdated": "2026-05-10",
+      "lastUpdated": "2026-08-15",
       "priceRange": {
         "min": 3299,
         "max": 3999
       },
       "amazon": {
-        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "url": "https://link.amazon/B091UQlWh",
         "displayPrice": 3590,
         "sellerNote": "MSI Ventus 3X 16GB",
         "inStock": true
@@ -60,13 +60,13 @@
       }
     },
     "rtx-5070": {
-      "lastUpdated": "2026-05-10",
+      "lastUpdated": "2026-08-15",
       "priceRange": {
         "min": 4299,
         "max": 4999
       },
       "amazon": {
-        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "url": "https://link.amazon/B09crOPgW",
         "displayPrice": 4590,
         "sellerNote": "Gigabyte Gaming OC",
         "inStock": true
@@ -79,13 +79,13 @@
       }
     },
     "rtx-5070-ti": {
-      "lastUpdated": "2026-05-10",
+      "lastUpdated": "2026-08-15",
       "priceRange": {
         "min": 7490,
         "max": 8900
       },
       "amazon": {
-        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "url": "https://link.amazon/B0b1itYX9",
         "displayPrice": 7990,
         "sellerNote": "ASUS ROG",
         "inStock": true
@@ -98,13 +98,13 @@
       }
     },
     "rtx-5080": {
-      "lastUpdated": "2026-05-10",
+      "lastUpdated": "2026-08-15",
       "priceRange": {
         "min": 9999,
         "max": 11999
       },
       "amazon": {
-        "url": "https://www.amazon.com.br/dp/PLACEHOLDER/?tag=SEU-TAG-20",
+        "url": "https://link.amazon/B04OGJc2Z",
         "displayPrice": 10990,
         "sellerNote": "ASUS ROG Strix",
         "inStock": true

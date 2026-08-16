@@ -63,7 +63,7 @@ describe('GpuCard', () => {
     expect(html).toContain('4K');
   });
 
-  it('renders formatted price when available', async () => {
+  it('shows "Consultar preço" when in stock', async () => {
     const container = await AstroContainer.create();
     const html = await container.renderToString(GpuCard, {
       props: {
@@ -79,11 +79,10 @@ describe('GpuCard', () => {
       },
     });
 
-    expect(html).toContain('A partir de');
-    expect(html).toContain('R$');
+    expect(html).toContain('Consultar preço');
   });
 
-  it('shows "Preço indisponível" when no price', async () => {
+  it('shows "Indisponível" when out of stock', async () => {
     const container = await AstroContainer.create();
     const html = await container.renderToString(GpuCard, {
       props: {
@@ -93,11 +92,11 @@ describe('GpuCard', () => {
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente.',
         fpsAvg1440p: 169,
-        inStock: true,
+        inStock: false,
       },
     });
 
-    expect(html).toContain('Preço indisponível');
+    expect(html).toContain('Indisponível');
   });
 
   it('renders FPS average', async () => {
