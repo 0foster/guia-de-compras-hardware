@@ -52,50 +52,25 @@ const links = getAffiliateLinks(gpu.slug);
 
       <!-- Hero -->
       <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-start">
-        <!-- GPU Stats Circles -->
-        <div class="flex h-64 w-full shrink-0 items-center justify-center gap-4 sm:gap-6 rounded-xl bg-gray-100 lg:h-72 lg:w-80 dark:bg-gray-800 px-4">
-          <!-- VRAM -->
-          <div class="flex flex-col items-center gap-1.5">
-            <div class="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full border-2 border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-900">
-              <div class="text-center">
-                <span class="block text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">{gpu.vram}</span>
-                <span class="block text-[10px] font-semibold uppercase tracking-wider text-gray-400">GB</span>
-              </div>
-            </div>
-            <span class="text-[10px] font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">VRAM</span>
-          </div>
-
-          <!-- Resolução Ideal -->
-          <div class="flex flex-col items-center gap-1.5">
-            <div class="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full border-2 border-[var(--color-brand-red)] bg-white dark:bg-gray-900">
-              <span class="text-lg sm:text-xl font-bold text-[var(--color-brand-red)]">{gpu.targetResolution[0]}</span>
-            </div>
-            <span class="text-[10px] font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Ideal</span>
-          </div>
-
-          <!-- FPS Médio -->
-          <div class="flex flex-col items-center gap-1.5">
-            <div class="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full border-2 border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-900">
-              <div class="text-center">
-                <span class="block text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">{gpu.fps[gpu.targetResolution[0] as keyof typeof gpu.fps].avg}</span>
-                <span class="block text-[10px] font-semibold uppercase tracking-wider text-gray-400">FPS</span>
-              </div>
-            </div>
-            <span class="text-[10px] font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Médio</span>
-          </div>
+        <!-- Image placeholder -->
+        <div class="flex h-64 w-full shrink-0 items-center justify-center rounded-xl bg-gray-100 lg:h-72 lg:w-80 dark:bg-gray-800">
+          <svg class="h-24 w-24 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+          </svg>
         </div>
 
         <div class="flex-1">
           <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">{gpu.name}</h1>
           <div class="mt-2 flex flex-wrap gap-2">
             <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-              {gpu.vram} GB {gpu.vramType}
+              {gpu.vram} GB
             </span>
-            {gpu.targetResolution.map((res) => (
-              <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-                {res}
-              </span>
-            ))}
+            <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+              {gpu.targetResolution[0]}
+            </span>
+            <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+              {gpu.fps[gpu.targetResolution[0] as keyof typeof gpu.fps].avg} FPS médio
+            </span>
           </div>
 
           <!-- Buy buttons -->

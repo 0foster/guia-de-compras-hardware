@@ -13,7 +13,7 @@ describe('GpuCard', () => {
         vram: 12,
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente para 1440p.',
-        fpsAvg1440p: 169,
+        fpsAvgIdeal: 169,
         priceMin: 4299,
         priceMax: 4999,
         inStock: true,
@@ -33,7 +33,7 @@ describe('GpuCard', () => {
         vram: 16,
         targetResolution: ['1440p', '4K'],
         aiSummary: 'Sweet spot para gamers.',
-        fpsAvg1440p: 201,
+        fpsAvgIdeal: 201,
         priceMin: 7490,
         priceMax: 8900,
         inStock: true,
@@ -52,7 +52,7 @@ describe('GpuCard', () => {
         vram: 16,
         targetResolution: ['1440p', '4K'],
         aiSummary: 'Sweet spot para gamers.',
-        fpsAvg1440p: 201,
+        fpsAvgIdeal: 201,
         priceMin: 7490,
         priceMax: 8900,
         inStock: true,
@@ -72,7 +72,7 @@ describe('GpuCard', () => {
         vram: 12,
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente.',
-        fpsAvg1440p: 169,
+        fpsAvgIdeal: 169,
         priceMin: 4299,
         priceMax: 4999,
         inStock: true,
@@ -91,7 +91,7 @@ describe('GpuCard', () => {
         vram: 12,
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente.',
-        fpsAvg1440p: 169,
+        fpsAvgIdeal: 169,
         inStock: false,
       },
     });
@@ -108,15 +108,14 @@ describe('GpuCard', () => {
         vram: 12,
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente.',
-        fpsAvg1440p: 169,
+        fpsAvgIdeal: 169,
         priceMin: 4299,
         priceMax: 4999,
         inStock: true,
       },
     });
 
-    expect(html).toContain('169');
-    expect(html).toContain('FPS médio 1440p');
+    expect(html).toContain('169 FPS');
   });
 
   it('shows "Indisponível" when out of stock', async () => {
@@ -128,7 +127,7 @@ describe('GpuCard', () => {
         vram: 12,
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente.',
-        fpsAvg1440p: 169,
+        fpsAvgIdeal: 169,
         priceMin: 4299,
         priceMax: 4999,
         inStock: false,
@@ -147,7 +146,7 @@ describe('GpuCard', () => {
         vram: 32,
         targetResolution: ['4K'],
         aiSummary: 'O topo absoluto.',
-        fpsAvg1440p: 265,
+        fpsAvgIdeal: 265,
         priceMin: 17999,
         priceMax: 22999,
         inStock: true,
@@ -168,7 +167,7 @@ describe('GpuCard', () => {
         vram: 16,
         targetResolution: ['1440p', '4K'],
         aiSummary: 'Sweet spot.',
-        fpsAvg1440p: 201,
+        fpsAvgIdeal: 201,
         priceMin: 7490,
         priceMax: 8900,
         inStock: true,
