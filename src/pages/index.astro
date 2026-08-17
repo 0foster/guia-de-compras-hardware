@@ -78,7 +78,7 @@ const gpus = getAllGpus();
                 vram={gpu.vram}
                 targetResolution={gpu.targetResolution}
                 aiSummary={gpu.aiSummary}
-                fpsAvg1440p={gpu.fps['1440p'].avg}
+                fpsAvgIdeal={gpu.fps[gpu.targetResolution[0] as keyof typeof gpu.fps].avg}
                 priceMin={links?.priceRange.min}
                 inStock={gpu.inStock}
               />
