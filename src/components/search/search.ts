@@ -16,7 +16,6 @@ export interface GpuSearchEntry {
   vram: number;
   targetResolution: string[];
   aiSummary: string;
-  priceMin?: number;
 }
 
 export interface SearchResult {

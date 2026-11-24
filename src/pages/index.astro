@@ -5,7 +5,7 @@ import Footer from '../components/layout/Footer.astro';
 import FilterPanel from '../components/filter/FilterPanel.astro';
 import GpuCard from '../components/gpu/GpuCard.astro';
 import WebsiteSchema from '../components/seo/WebsiteSchema.astro';
-import { getAllGpus, getAffiliateLinks } from '../utils/gpu';
+import { getAllGpus } from '../utils/gpu';
 
 const gpus = getAllGpus();
 ---
@@ -70,7 +70,6 @@ const gpus = getAllGpus();
         <!-- GPU Grid -->
         <div id="gpu-grid" class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {gpus.map((gpu) => {
-            const links = getAffiliateLinks(gpu.slug);
             return (
               <GpuCard
                 slug={gpu.slug}
@@ -79,7 +78,6 @@ const gpus = getAllGpus();
                 targetResolution={gpu.targetResolution}
                 aiSummary={gpu.aiSummary}
                 fpsAvgIdeal={gpu.fps[gpu.targetResolution[0] as keyof typeof gpu.fps].avg}
-                priceMin={links?.priceRange.min}
                 inStock={gpu.inStock}
               />
             );

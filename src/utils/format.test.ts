@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatBRL } from './format';
+import { formatBRL, formatFps } from './format';
 
 describe('formatBRL', () => {
   it('formats a typical GPU price', () => {
@@ -31,5 +31,12 @@ describe('formatBRL', () => {
     // The format function uses minimumFractionDigits: 0
     const result = formatBRL(1000);
     expect(result).not.toContain(',00');
+  });
+});
+
+describe('formatFps', () => {
+  it('uses a comma as decimal separator with one decimal place', () => {
+    expect(formatFps(72.2)).toBe('72,2');
+    expect(formatFps(240)).toBe('240,0');
   });
 });

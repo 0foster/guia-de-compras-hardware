@@ -1,4 +1,5 @@
 ---
+import { formatFps } from '../../utils/format';
 
 interface Props {
   slug: string;
@@ -7,7 +8,6 @@ interface Props {
   targetResolution: string[];
   aiSummary: string;
   fpsAvgIdeal: number;
-  priceMin?: number;
   inStock?: boolean;
 }
 
@@ -18,7 +18,6 @@ const {
   targetResolution,
   aiSummary,
   fpsAvgIdeal,
-  priceMin,
   inStock = true,
 } = Astro.props;
 ---
@@ -27,7 +26,6 @@ const {
   class="gpu-card group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-shadow hover:shadow-lg dark:border-gray-800 dark:bg-gray-900"
   data-slug={slug}
   data-vram={vram}
-  data-price-min={priceMin ?? ''}
   data-resolution={targetResolution.join(',')}
 >
   <!-- Imagem placeholder -->
@@ -48,7 +46,7 @@ const {
         {targetResolution[0]}
       </span>
       <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-        {fpsAvgIdeal} FPS
+        {formatFps(fpsAvgIdeal)} FPS
       </span>
     </div>
 
