@@ -17,7 +17,6 @@ const mockGpus: GpuSearchEntry[] = [
     targetResolution: ['1080p'],
     aiSummary:
       'A RTX 5050 é a porta de entrada da geração Blackwell, ideal para 1080p competitivo.',
-    priceMin: 1799,
   },
   {
     slug: 'rtx-5070',
@@ -27,7 +26,6 @@ const mockGpus: GpuSearchEntry[] = [
     targetResolution: ['1440p'],
     aiSummary:
       'Posicionada para dominar o 1440p com folga, excelente para high refresh rate.',
-    priceMin: 4299,
   },
   {
     slug: 'rtx-5070-ti',
@@ -37,7 +35,6 @@ const mockGpus: GpuSearchEntry[] = [
     targetResolution: ['1440p', '4K'],
     aiSummary:
       'Excelente para quem joga em 1440p e quer margem para 4K no futuro. O sweet spot.',
-    priceMin: 7490,
   },
   {
     slug: 'rtx-5090',
@@ -47,7 +44,6 @@ const mockGpus: GpuSearchEntry[] = [
     targetResolution: ['4K'],
     aiSummary:
       'O topo absoluto da linha Blackwell — 32GB de GDDR7 e 21.760 CUDA cores.',
-    priceMin: 17999,
   },
 ];
 

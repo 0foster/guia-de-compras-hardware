@@ -9,12 +9,19 @@ describe('FilterPanel (Mobile ergonomics & Multi-instance support)', () => {
     const html = await container.renderToString(FilterPanel);
     const $ = cheerio.load(html);
 
-    expect($('[data-filter-role="min-handle"]').length).toBe(1);
-    expect($('[data-filter-role="max-handle"]').length).toBe(1);
-    expect($('[data-filter-role="min-input"]').length).toBe(1);
-    expect($('[data-filter-role="max-input"]').length).toBe(1);
     expect($('[data-filter-role="clear-filters"]').length).toBe(1);
-    expect($('#price-min-handle').length).toBe(0);
+  });
+
+  it('does not render a price filter (prices are only shown when guaranteed by the store)', async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(FilterPanel);
+    const $ = cheerio.load(html);
+
+    expect($('[data-filter-role="min-handle"]').length).toBe(0);
+    expect($('[data-filter-role="max-handle"]').length).toBe(0);
+    expect($('[data-filter-role="min-input"]').length).toBe(0);
+    expect($('[data-filter-role="max-input"]').length).toBe(0);
+    expect(html).not.toContain('R$');
   });
 
   it('applies unique namePrefix to radio group to avoid conflict between desktop sidebar and mobile drawer', async () => {
@@ -29,13 +36,4 @@ describe('FilterPanel (Mobile ergonomics & Multi-instance support)', () => {
     expect($mobile('input[name="vram-mobile"]').length).toBe(4);
   });
 
-  it('contains anti-zoom font size (text-base sm:text-sm) on number inputs for iOS', async () => {
-    const container = await AstroContainer.create();
-    const html = await container.renderToString(FilterPanel);
-    const $ = cheerio.load(html);
-
-    const minInputClasses = $('[data-filter-role="min-input"]').attr('class') || '';
-    expect(minInputClasses).toContain('text-base');
-    expect(minInputClasses).toContain('sm:text-sm');
-  });
 });

@@ -14,8 +14,6 @@ describe('GpuCard', () => {
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente para 1440p.',
         fpsAvgIdeal: 169,
-        priceMin: 4299,
-        priceMax: 4999,
         inStock: true,
       },
     });
@@ -34,8 +32,6 @@ describe('GpuCard', () => {
         targetResolution: ['1440p', '4K'],
         aiSummary: 'Sweet spot para gamers.',
         fpsAvgIdeal: 201,
-        priceMin: 7490,
-        priceMax: 8900,
         inStock: true,
       },
     });
@@ -53,8 +49,6 @@ describe('GpuCard', () => {
         targetResolution: ['1440p', '4K'],
         aiSummary: 'Sweet spot para gamers.',
         fpsAvgIdeal: 201,
-        priceMin: 7490,
-        priceMax: 8900,
         inStock: true,
       },
     });
@@ -73,8 +67,6 @@ describe('GpuCard', () => {
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente.',
         fpsAvgIdeal: 169,
-        priceMin: 4299,
-        priceMax: 4999,
         inStock: true,
       },
     });
@@ -109,8 +101,6 @@ describe('GpuCard', () => {
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente.',
         fpsAvgIdeal: 169,
-        priceMin: 4299,
-        priceMax: 4999,
         inStock: true,
       },
     });
@@ -128,8 +118,6 @@ describe('GpuCard', () => {
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente.',
         fpsAvgIdeal: 169,
-        priceMin: 4299,
-        priceMax: 4999,
         inStock: false,
       },
     });
@@ -147,8 +135,6 @@ describe('GpuCard', () => {
         targetResolution: ['4K'],
         aiSummary: 'O topo absoluto.',
         fpsAvgIdeal: 265,
-        priceMin: 17999,
-        priceMax: 22999,
         inStock: true,
       },
     });
@@ -168,8 +154,6 @@ describe('GpuCard', () => {
         targetResolution: ['1440p', '4K'],
         aiSummary: 'Sweet spot.',
         fpsAvgIdeal: 201,
-        priceMin: 7490,
-        priceMax: 8900,
         inStock: true,
       },
     });
@@ -178,7 +162,7 @@ describe('GpuCard', () => {
     const card = $('[data-slug="rtx-5070-ti"]');
     expect(card.length).toBe(1);
     expect(card.attr('data-vram')).toBe('16');
-    expect(card.attr('data-price-min')).toBe('7490');
+    expect(card.attr('data-price-min')).toBeUndefined();
     expect(card.attr('data-resolution')).toBe('1440p,4K');
   });
 });

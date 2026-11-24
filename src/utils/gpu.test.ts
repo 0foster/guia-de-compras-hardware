@@ -81,9 +81,7 @@ describe('getAffiliateLinks', () => {
   it('returns affiliate data for a valid slug', () => {
     const links = getAffiliateLinks('rtx-5070');
     expect(links).toBeDefined();
-    expect(links?.priceRange).toBeDefined();
-    expect(links?.priceRange.min).toBeGreaterThan(0);
-    expect(links?.priceRange.max).toBeGreaterThanOrEqual(links!.priceRange.min);
+    expect(links?.amazon?.url).toMatch(/^https:\/\//);
   });
 
   it('returns undefined for an invalid slug', () => {
@@ -91,22 +89,28 @@ describe('getAffiliateLinks', () => {
     expect(links).toBeUndefined();
   });
 
-  it('every GPU has corresponding affiliate links', () => {
-    const gpus = getAllGpus();
-    for (const gpu of gpus) {
-      const links = getAffiliateLinks(gpu.slug);
-      expect(links).toBeDefined();
-      expect(links?.amazon).toBeDefined();
-      expect(links?.mercadoLivre).toBeDefined();
+  it('every GPU has an affiliate entry', () => {
+    for (const gpu of getAllGpus()) {
+      expect(getAffiliateLinks(gpu.slug)).toBeDefined();
     }
   });
 
-  it('affiliate links have amazon and mercadoLivre entries with required fields', () => {
-    const links = getAffiliateLinks('rtx-5080');
-    expect(links?.amazon.url).toBeDefined();
-    expect(links?.amazon.displayPrice).toBeGreaterThan(0);
-    expect(links?.amazon.sellerNote).toBeDefined();
-    expect(links?.mercadoLivre.url).toBeDefined();
-    expect(links?.mercadoLivre.displayPrice).toBeGreaterThan(0);
+  it('never stores prices (only guaranteed store prices may be shown)', () => {
+    for (const gpu of getAllGpus()) {
+      const links = getAffiliateLinks(gpu.slug) as Record<string, unknown> | undefined;
+      expect(links).not.toHaveProperty('priceRange');
+      for (const store of ['amazon', 'mercadoLivre']) {
+        expect((links?.[store] as Record<string, unknown> | undefined) ?? {}).not.toHaveProperty('displayPrice');
+      }
+    }
+  });
+
+  it('never ships placeholder links', () => {
+    for (const gpu of getAllGpus()) {
+      const links = getAffiliateLinks(gpu.slug);
+      for (const store of [links?.amazon, links?.mercadoLivre]) {
+        if (store) expect(store.url).not.toMatch(/PLACEHOLDER|SEU-TAG|SEU-ID/);
+      }
+    }
   });
 });
