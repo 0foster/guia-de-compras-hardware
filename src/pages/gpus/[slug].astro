@@ -4,6 +4,7 @@ import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
 import GpuSpecTable from '../../components/gpu/GpuSpecTable.astro';
 import FpsBenchmark from '../../components/gpu/FpsBenchmark.astro';
+import GameFpsTable from '../../components/gpu/GameFpsTable.astro';
 import BuyButton from '../../components/gpu/BuyButton.astro';
 import AdjacentGpus from '../../components/gpu/AdjacentGpus.astro';
 import ProductSchema from '../../components/seo/ProductSchema.astro';
@@ -99,6 +100,12 @@ const links = getAffiliateLinks(gpu.slug);
       <section class="mb-8">
         <h2 class="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100">FPS Médio por Resolução</h2>
         <FpsBenchmark fps={gpu.fps} note={gpu.benchmarkNote} />
+      </section>
+
+      <!-- FPS por jogo -->
+      <section class="mb-8">
+        <h2 class="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100">FPS por Jogo</h2>
+        <GameFpsTable gpuSlug={gpu.slug} defaultResolution={gpu.targetResolution[0] as '1080p' | '1440p' | '4K'} />
       </section>
 
       <!-- Specs -->
