@@ -48,7 +48,7 @@
         "stepUp": "rtx-5060"
       },
       "inStock": true,
-      "metaDescription": "RTX 5050: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+      "metaDescription": "RTX 5050: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5060",
@@ -98,7 +98,7 @@
         "stepUp": "rtx-5060-ti"
       },
       "inStock": true,
-      "metaDescription": "RTX 5060: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+      "metaDescription": "RTX 5060: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5060-ti",
@@ -148,7 +148,7 @@
         "stepUp": "rtx-5070"
       },
       "inStock": true,
-      "metaDescription": "RTX 5060 Ti: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+      "metaDescription": "RTX 5060 Ti: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5070",
@@ -198,7 +198,7 @@
         "stepUp": "rtx-5070-ti"
       },
       "inStock": true,
-      "metaDescription": "RTX 5070: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+      "metaDescription": "RTX 5070: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5070-ti",
@@ -248,7 +248,7 @@
         "stepUp": "rtx-5080"
       },
       "inStock": true,
-      "metaDescription": "RTX 5070 Ti: specs completos, benchmarks em 1080p/1440p/4K e onde comprar mais barato no Brasil."
+      "metaDescription": "RTX 5070 Ti: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5080",
@@ -298,7 +298,7 @@
         "stepUp": "rtx-5090"
       },
       "inStock": true,
-      "metaDescription": "RTX 5080: specs completos, benchmarks em 1440p/4K e onde comprar mais barato no Brasil."
+      "metaDescription": "RTX 5080: specs completos, benchmarks em 1440p/4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5090",
@@ -348,7 +348,7 @@
         "stepUp": ""
       },
       "inStock": true,
-      "metaDescription": "RTX 5090: specs completos, benchmarks em 4K e onde comprar mais barato no Brasil."
+      "metaDescription": "RTX 5090: specs completos, benchmarks em 4K e onde comprar no Brasil."
     }
   ]
 }

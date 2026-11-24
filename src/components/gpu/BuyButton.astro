@@ -1,11 +1,5 @@
 ---
-
-interface StoreLink {
-  url: string;
-  displayPrice: number;
-  sellerNote?: string;
-  inStock: boolean;
-}
+import type { StoreLink } from '../../utils/gpu';
 
 interface Props {
   amazon?: StoreLink;
@@ -13,7 +7,14 @@ interface Props {
 }
 
 const { amazon, mercadoLivre } = Astro.props;
+const hasAnyLink = Boolean(amazon || mercadoLivre);
 ---
+
+{!hasAnyLink && (
+  <p class="rounded-xl border border-dashed border-gray-300 px-5 py-4 text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
+    Links de compra em breve.
+  </p>
+)}
 
 <div class="flex flex-col gap-3 sm:flex-row">
   {amazon && (

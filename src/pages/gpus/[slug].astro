@@ -26,11 +26,11 @@ const links = getAffiliateLinks(gpu.slug);
 ---
 
 <BaseLayout
-  title={`${gpu.shortName} — Specs, Benchmarks e Preços | Guia de Compras Hardware`}
+  title={`${gpu.shortName} — Specs, Benchmarks e Onde Comprar | Guia de Compras Hardware`}
   description={gpu.metaDescription}
   ogType="product"
 >
-  <ProductSchema slot="head" {gpu} {links} />
+  <ProductSchema slot="head" {gpu} />
   <BreadcrumbSchema
     slot="head"
     trail={[

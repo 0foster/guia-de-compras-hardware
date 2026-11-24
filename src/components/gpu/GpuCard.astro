@@ -7,7 +7,6 @@ interface Props {
   targetResolution: string[];
   aiSummary: string;
   fpsAvgIdeal: number;
-  priceMin?: number;
   inStock?: boolean;
 }
 
@@ -18,7 +17,6 @@ const {
   targetResolution,
   aiSummary,
   fpsAvgIdeal,
-  priceMin,
   inStock = true,
 } = Astro.props;
 ---
@@ -27,7 +25,6 @@ const {
   class="gpu-card group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-shadow hover:shadow-lg dark:border-gray-800 dark:bg-gray-900"
   data-slug={slug}
   data-vram={vram}
-  data-price-min={priceMin ?? ''}
   data-resolution={targetResolution.join(',')}
 >
   <!-- Imagem placeholder -->
