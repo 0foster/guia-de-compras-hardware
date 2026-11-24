@@ -6,7 +6,7 @@ O site está disponível ou será implantado no domínio: `guiadecomprashardware
 
 ## Por que este projeto existe? 🤔
 
-Escolher a placa de vídeo ideal pode ser um processo confuso, envolvendo centenas de especificações técnicas (VRAM, TGP, largura de banda) e a necessidade de procurar benchmarks espalhados por diversos sites. Este projeto consolida dados precisos da nova série NVIDIA RTX 50 (da 5050 à 5090) com filtros fáceis de usar (resolução, preço, VRAM), otimização SEO e uma experiência de usuário focada em performance. 
+Escolher a placa de vídeo ideal pode ser um processo confuso, envolvendo centenas de especificações técnicas (VRAM, TGP, largura de banda) e a necessidade de procurar benchmarks espalhados por diversos sites. Este projeto consolida dados da série NVIDIA RTX 50 (da 5050 à 5090) com filtros fáceis de usar (resolução, VRAM), otimização SEO e uma experiência de usuário focada em performance. 
 
 ## Tech Stack 🛠️
 
@@ -83,22 +83,24 @@ src/
 ## Sistema de Dados 💾
 
 O site é fortemente guiado a dados (*data-driven*), baseando-se em dois arquivos JSON principais:
-- `src/data/gpus.json`: Define as propriedades, especificações e benchmarks de todas as 7 GPUs catalogadas (RTX 5050 até RTX 5090). A criação de páginas dinâmicas e as tabelas comparativas consomem este arquivo diretamente.
-- `src/data/affiliate-links.json`: Contém os dados de precificação e links de parceiros (afiliados) que alimentam os botões de compra (BuyButton).
+- `src/data/gpus.json`: Define as propriedades, especificações e benchmarks das 8 GPUs catalogadas (RTX 5050 até RTX 5090, com a 5060 Ti em 8 GB e 16 GB). A chave `sources` registra a origem dos dados:
+  - **Especificações:** página oficial da NVIDIA "Compare 50 Series Specs".
+  - **FPS médio:** uma única fonte, o review da RTX 5050 do TechPowerUp (média de 24 jogos, mesma máquina de teste para todas as placas).
+- `src/data/affiliate-links.json`: Links de afiliados que alimentam os botões de compra (BuyButton). **Não guarda preço:** o site só exibe preço quando ele vier garantido pela própria loja.
 
 ## Status Atual 📊
 
 **O que já está pronto:**
-- ✅ Catálogo de 7 GPUs da série RTX 50 (5050 a 5090) com especificações reais
-- ✅ Filtros client-side rápidos (resolução, VRAM, preço)
+- ✅ Catálogo de 8 GPUs da série RTX 50 (5050 a 5090, com a 5060 Ti em 8 GB e 16 GB), com especificações oficiais da NVIDIA e FPS médio do TechPowerUp
+- ✅ Filtros client-side rápidos (resolução, VRAM)
 - ✅ Suporte completo a Dark Mode
 - ✅ SEO Avançado (Sitemap, tags Meta, JSON-LD Schemas)
 - ✅ Arquitetura base implementada (Astro + Tailwind)
 - ✅ Busca dinâmica com matching parcial e normalização de acentos
-- ✅ Testes automatizados com Vitest (63 testes)
+- ✅ Testes automatizados com Vitest
 
 **Em andamento / Placeholders:**
-- 🚧 Links de afiliados (atualmente utilizando dados simulados)
+- 🚧 Links de afiliados: Amazon em 6 das 8 GPUs (faltam RTX 5060 Ti 16 GB e RTX 5090); Mercado Livre ainda não integrado
 - 🚧 Imagens das placas de vídeo (atualmente utilizando SVG placeholders)
 
 ## Roadmap 🗺️

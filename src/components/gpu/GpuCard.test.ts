@@ -100,12 +100,12 @@ describe('GpuCard', () => {
         vram: 12,
         targetResolution: ['1440p'],
         aiSummary: 'GPU excelente.',
-        fpsAvgIdeal: 169,
+        fpsAvgIdeal: 108.4,
         inStock: true,
       },
     });
 
-    expect(html).toContain('169 FPS');
+    expect(html).toContain('108,4 FPS');
   });
 
   it('shows "Indisponível" when out of stock', async () => {

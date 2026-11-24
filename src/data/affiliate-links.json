@@ -17,13 +17,16 @@
         "inStock": true
       }
     },
-    "rtx-5060-ti": {
+    "rtx-5060-ti-8gb": {
       "lastUpdated": "2026-11-23",
       "amazon": {
         "url": "https://link.amazon/B091UQlWh",
         "sellerNote": "MSI Gaming OC 8GB",
         "inStock": true
       }
+    },
+    "rtx-5060-ti": {
+      "lastUpdated": "2026-11-23"
     },
     "rtx-5070": {
       "lastUpdated": "2026-11-23",

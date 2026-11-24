@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getAllGpus, getGpuBySlug, getAffiliateLinks } from './gpu';
+import gpuData from '../data/gpus.json';
 
 describe('getAllGpus', () => {
   it('returns an array of GPUs', () => {
@@ -8,9 +9,18 @@ describe('getAllGpus', () => {
     expect(gpus.length).toBeGreaterThan(0);
   });
 
-  it('returns exactly 7 RTX 50-series GPUs', () => {
-    const gpus = getAllGpus();
-    expect(gpus).toHaveLength(7);
+  it('returns the 8 RTX 50-series desktop GPUs (5060 Ti in 8 GB and 16 GB)', () => {
+    const slugs = getAllGpus().map((g) => g.slug);
+    expect(slugs).toEqual([
+      'rtx-5050',
+      'rtx-5060',
+      'rtx-5060-ti-8gb',
+      'rtx-5060-ti',
+      'rtx-5070',
+      'rtx-5070-ti',
+      'rtx-5080',
+      'rtx-5090',
+    ]);
   });
 
   it('every GPU has required fields', () => {
@@ -52,6 +62,36 @@ describe('getAllGpus', () => {
         expect(slugs.has(gpu.adjacentGpus.stepUp)).toBe(true);
       }
     }
+  });
+
+  it('adjacentGpus forms a consistent chain in list order', () => {
+    const gpus = getAllGpus();
+    gpus.forEach((gpu, i) => {
+      expect(gpu.adjacentGpus.stepDown).toBe(i > 0 ? gpus[i - 1].slug : '');
+      expect(gpu.adjacentGpus.stepUp).toBe(i < gpus.length - 1 ? gpus[i + 1].slug : '');
+    });
+  });
+
+  it('average FPS drops as resolution goes up', () => {
+    for (const gpu of getAllGpus()) {
+      expect(gpu.fps['1080p'].avg).toBeGreaterThan(gpu.fps['1440p'].avg);
+      expect(gpu.fps['1440p'].avg).toBeGreaterThan(gpu.fps['4K'].avg);
+    }
+  });
+
+  it('memory bandwidth matches the official bus width for each memory type', () => {
+    // GDDR7 nos modelos da série 50 roda a 28-30 Gbps; GDDR6 da 5050 a 20 Gbps.
+    for (const gpu of getAllGpus()) {
+      const gbps = (gpu.memoryBandwidth * 8) / gpu.memoryBus;
+      if (gpu.vramType === 'GDDR6') expect(gbps).toBe(20);
+      else expect(gbps).toBeGreaterThanOrEqual(28);
+    }
+  });
+
+  it('documents the data sources', () => {
+    expect(gpuData.sources.specs.url).toMatch(/^https:\/\/www\.nvidia\.com\//);
+    expect(gpuData.sources.benchmarks.url).toMatch(/^https:\/\/www\.techpowerup\.com\//);
+    expect(gpuData.sources.benchmarks.testSystem).toBeTruthy();
   });
 });
 
