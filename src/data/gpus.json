@@ -1,4 +1,20 @@
 {
+  "sources": {
+    "specs": {
+      "name": "NVIDIA — Compare 50 Series Specs",
+      "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/compare/",
+      "retrieved": "2026-11-23",
+      "notes": "Clocks em GHz convertidos para MHz. 'tdp' guarda o Total Graphics Power (TGP). 'recommendedPsu' é o Required System Power. A NVIDIA não informa a largura de lanes PCIe, só a geração."
+    },
+    "benchmarks": {
+      "name": "TechPowerUp — NVIDIA GeForce RTX 5050 8 GB Review, página Average FPS (24 jogos)",
+      "url": "https://www.techpowerup.com/review/gigabyte-geforce-rtx-5050-gaming-oc/31.html",
+      "published": "2025-07-04",
+      "retrieved": "2026-11-23",
+      "testSystem": "AMD Ryzen 7 9800X3D, 2x16 GB DDR5-6200, Windows 11 24H2",
+      "settings": "Qualidade máxima, resolução nativa, sem ray tracing e sem DLSS/FSR. Placas de comparação em clocks de referência."
+    }
+  },
   "gpus": [
     {
       "slug": "rtx-5050",
@@ -6,49 +22,43 @@
       "shortName": "RTX 5050",
       "releaseYear": 2025,
       "performanceTier": 1,
-      "targetResolution": ["1080p"],
+      "targetResolution": [
+        "1080p"
+      ],
       "vram": 8,
       "vramType": "GDDR6",
       "tdp": 130,
       "cudaCores": 2560,
-      "baseClock": 2317,
+      "baseClock": 2310,
       "boostClock": 2570,
       "memoryBus": 128,
       "memoryBandwidth": 320,
-      "pciExpress": "5.0 x8",
+      "pciExpress": "5.0",
       "recommendedPsu": 550,
       "displayOutputs": {
         "hdmi": "2.1b",
         "displayPort": "2.1b",
         "totalOutputs": 4
       },
-      "aiSummary": "A RTX 5050 é a porta de entrada da geração Blackwell, ideal para 1080p competitivo e jogos atuais em configurações médias. Boa escolha para quem está montando o primeiro PC gamer com orçamento apertado, sem abrir mão de DLSS 4 e ray tracing leve.",
+      "aiSummary": "Porta de entrada da geração Blackwell e a única da série 50 com memória GDDR6. Nos testes do TechPowerUp, roda os jogos atuais em 1080p com qualidade máxima a 72 FPS de média. Para ir além disso, a RTX 5060 entrega cerca de 30% a mais.",
       "fps": {
         "1080p": {
-          "cyberpunk2077Ultra": 75,
-          "fortniteCompetitive": 220,
-          "msfs2024Ultra": 38,
-          "avg": 111
+          "avg": 72.2
         },
         "1440p": {
-          "cyberpunk2077Ultra": 50,
-          "fortniteCompetitive": 150,
-          "msfs2024Ultra": 25,
-          "avg": 75
+          "avg": 50.1
         },
         "4K": {
-          "cyberpunk2077Ultra": 25,
-          "fortniteCompetitive": 80,
-          "msfs2024Ultra": 12,
-          "avg": 39
+          "avg": 26.2
         }
       },
+      "benchmarkNote": "Modelo testado: Gigabyte RTX 5050 Gaming OC, com overclock de fábrica.",
       "adjacentGpus": {
         "stepDown": "",
         "stepUp": "rtx-5060"
       },
       "inStock": true,
-      "metaDescription": "RTX 5050: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
+      "metaDescription": "RTX 5050: especificações oficiais, FPS médio em 1080p, 1440p e 4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5060",
@@ -56,99 +66,134 @@
       "shortName": "RTX 5060",
       "releaseYear": 2025,
       "performanceTier": 2,
-      "targetResolution": ["1080p", "1440p"],
+      "targetResolution": [
+        "1080p",
+        "1440p"
+      ],
       "vram": 8,
       "vramType": "GDDR7",
       "tdp": 145,
       "cudaCores": 3840,
-      "baseClock": 2235,
-      "boostClock": 2497,
+      "baseClock": 2280,
+      "boostClock": 2500,
       "memoryBus": 128,
       "memoryBandwidth": 448,
-      "pciExpress": "5.0 x8",
+      "pciExpress": "5.0",
       "recommendedPsu": 550,
       "displayOutputs": {
         "hdmi": "2.1b",
         "displayPort": "2.1b",
         "totalOutputs": 4
       },
-      "aiSummary": "Sucessora natural da RTX 4060, oferece um salto considerável em 1080p e cobre 1440p com folga em jogos competitivos. O ponto de equilíbrio para quem quer rodar tudo no high sem gastar demais, com suporte a DLSS 4 e Frame Generation.",
+      "aiSummary": "Cerca de 30% mais rápida que a RTX 5050 em 1080p, com 94 FPS de média em qualidade máxima, e ainda passa de 60 FPS em 1440p. Os 8 GB de VRAM podem limitar jogos com texturas muito pesadas; nesses casos, vale olhar a RTX 5060 Ti de 16 GB.",
       "fps": {
         "1080p": {
-          "cyberpunk2077Ultra": 105,
-          "fortniteCompetitive": 280,
-          "msfs2024Ultra": 50,
-          "avg": 145
+          "avg": 94.0
         },
         "1440p": {
-          "cyberpunk2077Ultra": 72,
-          "fortniteCompetitive": 200,
-          "msfs2024Ultra": 35,
-          "avg": 102
+          "avg": 65.6
         },
         "4K": {
-          "cyberpunk2077Ultra": 38,
-          "fortniteCompetitive": 115,
-          "msfs2024Ultra": 18,
-          "avg": 57
+          "avg": 33.6
         }
       },
+      "benchmarkNote": null,
       "adjacentGpus": {
         "stepDown": "rtx-5050",
-        "stepUp": "rtx-5060-ti"
+        "stepUp": "rtx-5060-ti-8gb"
       },
       "inStock": true,
-      "metaDescription": "RTX 5060: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
+      "metaDescription": "RTX 5060: especificações oficiais, FPS médio em 1080p, 1440p e 4K e onde comprar no Brasil."
     },
     {
-      "slug": "rtx-5060-ti",
-      "name": "NVIDIA GeForce RTX 5060 Ti",
-      "shortName": "RTX 5060 Ti",
+      "slug": "rtx-5060-ti-8gb",
+      "name": "NVIDIA GeForce RTX 5060 Ti 8 GB",
+      "shortName": "RTX 5060 Ti 8GB",
       "releaseYear": 2025,
       "performanceTier": 2,
-      "targetResolution": ["1080p", "1440p"],
-      "vram": 16,
+      "targetResolution": [
+        "1080p",
+        "1440p"
+      ],
+      "vram": 8,
       "vramType": "GDDR7",
       "tdp": 180,
       "cudaCores": 4608,
-      "baseClock": 2407,
-      "boostClock": 2572,
+      "baseClock": 2410,
+      "boostClock": 2570,
       "memoryBus": 128,
       "memoryBandwidth": 448,
-      "pciExpress": "5.0 x8",
+      "pciExpress": "5.0",
       "recommendedPsu": 600,
       "displayOutputs": {
         "hdmi": "2.1b",
         "displayPort": "2.1b",
         "totalOutputs": 4
       },
-      "aiSummary": "Versão potencializada da RTX 5060 com mais CUDA cores e a opção de 16GB de VRAM. Boa para 1440p, especialmente em jogos modernos com texturas pesadas — a versão de 16GB é a mais recomendada para quem quer longevidade.",
+      "aiSummary": "Cerca de 14% mais rápida que a RTX 5060 em 1080p, com 107,6 FPS de média. Em 1080p empata com a versão de 16 GB, mas em 4K fica cerca de 12% atrás, porque os 8 GB de VRAM passam a limitar. Boa escolha para 1080p e 1440p com alta taxa de quadros.",
       "fps": {
         "1080p": {
-          "cyberpunk2077Ultra": 130,
-          "fortniteCompetitive": 320,
-          "msfs2024Ultra": 60,
-          "avg": 170
+          "avg": 107.6
         },
         "1440p": {
-          "cyberpunk2077Ultra": 90,
-          "fortniteCompetitive": 240,
-          "msfs2024Ultra": 42,
-          "avg": 124
+          "avg": 75.8
         },
         "4K": {
-          "cyberpunk2077Ultra": 50,
-          "fortniteCompetitive": 145,
-          "msfs2024Ultra": 25,
-          "avg": 73
+          "avg": 39.1
         }
       },
+      "benchmarkNote": null,
       "adjacentGpus": {
         "stepDown": "rtx-5060",
+        "stepUp": "rtx-5060-ti"
+      },
+      "inStock": true,
+      "metaDescription": "RTX 5060 Ti 8GB: especificações oficiais, FPS médio em 1080p, 1440p e 4K e onde comprar no Brasil."
+    },
+    {
+      "slug": "rtx-5060-ti",
+      "name": "NVIDIA GeForce RTX 5060 Ti 16 GB",
+      "shortName": "RTX 5060 Ti 16GB",
+      "releaseYear": 2025,
+      "performanceTier": 2,
+      "targetResolution": [
+        "1080p",
+        "1440p"
+      ],
+      "vram": 16,
+      "vramType": "GDDR7",
+      "tdp": 180,
+      "cudaCores": 4608,
+      "baseClock": 2410,
+      "boostClock": 2570,
+      "memoryBus": 128,
+      "memoryBandwidth": 448,
+      "pciExpress": "5.0",
+      "recommendedPsu": 600,
+      "displayOutputs": {
+        "hdmi": "2.1b",
+        "displayPort": "2.1b",
+        "totalOutputs": 4
+      },
+      "aiSummary": "Mesmo chip da versão de 8 GB, com o dobro de memória. A diferença aparece nas resoluções mais altas: em 4K, é cerca de 13% mais rápida que a de 8 GB, e os 16 GB dão mais folga para jogos futuros. Indicada para 1440p, onde faz 77,8 FPS de média.",
+      "fps": {
+        "1080p": {
+          "avg": 106.2
+        },
+        "1440p": {
+          "avg": 77.8
+        },
+        "4K": {
+          "avg": 44.2
+        }
+      },
+      "benchmarkNote": null,
+      "adjacentGpus": {
+        "stepDown": "rtx-5060-ti-8gb",
         "stepUp": "rtx-5070"
       },
       "inStock": true,
-      "metaDescription": "RTX 5060 Ti: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
+      "metaDescription": "RTX 5060 Ti 16GB: especificações oficiais, FPS médio em 1080p, 1440p e 4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5070",
@@ -156,49 +201,43 @@
       "shortName": "RTX 5070",
       "releaseYear": 2025,
       "performanceTier": 3,
-      "targetResolution": ["1440p"],
+      "targetResolution": [
+        "1440p"
+      ],
       "vram": 12,
       "vramType": "GDDR7",
       "tdp": 250,
       "cudaCores": 6144,
-      "baseClock": 2160,
-      "boostClock": 2512,
+      "baseClock": 2330,
+      "boostClock": 2510,
       "memoryBus": 192,
       "memoryBandwidth": 672,
-      "pciExpress": "5.0 x16",
+      "pciExpress": "5.0",
       "recommendedPsu": 650,
       "displayOutputs": {
         "hdmi": "2.1b",
         "displayPort": "2.1b",
         "totalOutputs": 4
       },
-      "aiSummary": "Posicionada para dominar o 1440p com folga, a RTX 5070 entrega performance sólida em high refresh rate. Cobre 4K em jogos menos exigentes com DLSS 4 ativo. Ótima escolha para gamers que jogam em monitores de 144Hz+.",
+      "aiSummary": "Cerca de 39% mais rápida que a RTX 5060 Ti 16 GB em 1440p, com 108 FPS de média em qualidade máxima. É a opção de entrada para jogar em 1440p com alta taxa de quadros. Em 4K, fica na casa dos 60 FPS sem DLSS.",
       "fps": {
         "1080p": {
-          "cyberpunk2077Ultra": 175,
-          "fortniteCompetitive": 380,
-          "msfs2024Ultra": 75,
-          "avg": 210
+          "avg": 143.6
         },
         "1440p": {
-          "cyberpunk2077Ultra": 130,
-          "fortniteCompetitive": 320,
-          "msfs2024Ultra": 58,
-          "avg": 169
+          "avg": 108.4
         },
         "4K": {
-          "cyberpunk2077Ultra": 70,
-          "fortniteCompetitive": 195,
-          "msfs2024Ultra": 35,
-          "avg": 100
+          "avg": 63.2
         }
       },
+      "benchmarkNote": null,
       "adjacentGpus": {
         "stepDown": "rtx-5060-ti",
         "stepUp": "rtx-5070-ti"
       },
       "inStock": true,
-      "metaDescription": "RTX 5070: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
+      "metaDescription": "RTX 5070: especificações oficiais, FPS médio em 1080p, 1440p e 4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5070-ti",
@@ -206,49 +245,44 @@
       "shortName": "RTX 5070 Ti",
       "releaseYear": 2025,
       "performanceTier": 3,
-      "targetResolution": ["1440p", "4K"],
+      "targetResolution": [
+        "1440p",
+        "4K"
+      ],
       "vram": 16,
       "vramType": "GDDR7",
       "tdp": 300,
       "cudaCores": 8960,
-      "baseClock": 2340,
-      "boostClock": 2452,
+      "baseClock": 2300,
+      "boostClock": 2450,
       "memoryBus": 256,
       "memoryBandwidth": 896,
-      "pciExpress": "5.0 x16",
-      "recommendedPsu": 800,
+      "pciExpress": "5.0",
+      "recommendedPsu": 750,
       "displayOutputs": {
-        "hdmi": "2.1a",
+        "hdmi": "2.1b",
         "displayPort": "2.1b",
         "totalOutputs": 4
       },
-      "aiSummary": "A RTX 5070 Ti oferece performance próxima à RTX 5080 por um preço consideravelmente menor. Excelente para quem joga em 1440p e quer margem para 4K no futuro. O sweet spot para gamers exigentes sem orçamento ilimitado.",
+      "aiSummary": "Em 1440p entrega 133 FPS de média, cerca de 23% acima da RTX 5070 e 11% abaixo da RTX 5080. Tem os mesmos 16 GB de GDDR7 da 5080, o que a torna uma boa opção para 1440p exigente e para 4K.",
       "fps": {
         "1080p": {
-          "cyberpunk2077Ultra": 210,
-          "fortniteCompetitive": 420,
-          "msfs2024Ultra": 88,
-          "avg": 239
+          "avg": 171.5
         },
         "1440p": {
-          "cyberpunk2077Ultra": 162,
-          "fortniteCompetitive": 370,
-          "msfs2024Ultra": 70,
-          "avg": 201
+          "avg": 133.1
         },
         "4K": {
-          "cyberpunk2077Ultra": 90,
-          "fortniteCompetitive": 240,
-          "msfs2024Ultra": 45,
-          "avg": 125
+          "avg": 79.5
         }
       },
+      "benchmarkNote": null,
       "adjacentGpus": {
         "stepDown": "rtx-5070",
         "stepUp": "rtx-5080"
       },
       "inStock": true,
-      "metaDescription": "RTX 5070 Ti: specs completos, benchmarks em 1080p/1440p/4K e onde comprar no Brasil."
+      "metaDescription": "RTX 5070 Ti: especificações oficiais, FPS médio em 1080p, 1440p e 4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5080",
@@ -256,49 +290,44 @@
       "shortName": "RTX 5080",
       "releaseYear": 2025,
       "performanceTier": 4,
-      "targetResolution": ["1440p", "4K"],
+      "targetResolution": [
+        "1440p",
+        "4K"
+      ],
       "vram": 16,
       "vramType": "GDDR7",
       "tdp": 360,
       "cudaCores": 10752,
-      "baseClock": 2295,
-      "boostClock": 2617,
+      "baseClock": 2300,
+      "boostClock": 2620,
       "memoryBus": 256,
       "memoryBandwidth": 960,
-      "pciExpress": "5.0 x16",
+      "pciExpress": "5.0",
       "recommendedPsu": 850,
       "displayOutputs": {
         "hdmi": "2.1b",
         "displayPort": "2.1b",
         "totalOutputs": 4
       },
-      "aiSummary": "Praticamente uma 5090 acessível para quem joga em 4K. Performance excepcional em todos os títulos modernos, ray tracing pesado e Frame Generation múltipla. Para entusiastas que querem o topo sem pagar o premium absoluto da 5090.",
+      "aiSummary": "Segunda placa mais rápida da série: 149 FPS de média em 1440p e 92 FPS em 4K, com qualidade máxima e sem DLSS. Fica cerca de 15% acima da RTX 5070 Ti em 4K. A RTX 5090 é cerca de 52% mais rápida em 4K, mas consome bem mais energia (575 W contra 360 W).",
       "fps": {
         "1080p": {
-          "cyberpunk2077Ultra": 240,
-          "fortniteCompetitive": 450,
-          "msfs2024Ultra": 100,
-          "avg": 263
+          "avg": 187.8
         },
         "1440p": {
-          "cyberpunk2077Ultra": 195,
-          "fortniteCompetitive": 410,
-          "msfs2024Ultra": 82,
-          "avg": 229
+          "avg": 149.1
         },
         "4K": {
-          "cyberpunk2077Ultra": 110,
-          "fortniteCompetitive": 290,
-          "msfs2024Ultra": 55,
-          "avg": 152
+          "avg": 91.6
         }
       },
+      "benchmarkNote": null,
       "adjacentGpus": {
         "stepDown": "rtx-5070-ti",
         "stepUp": "rtx-5090"
       },
       "inStock": true,
-      "metaDescription": "RTX 5080: specs completos, benchmarks em 1440p/4K e onde comprar no Brasil."
+      "metaDescription": "RTX 5080: especificações oficiais, FPS médio em 1080p, 1440p e 4K e onde comprar no Brasil."
     },
     {
       "slug": "rtx-5090",
@@ -306,49 +335,43 @@
       "shortName": "RTX 5090",
       "releaseYear": 2025,
       "performanceTier": 5,
-      "targetResolution": ["4K"],
+      "targetResolution": [
+        "4K"
+      ],
       "vram": 32,
       "vramType": "GDDR7",
       "tdp": 575,
       "cudaCores": 21760,
-      "baseClock": 2017,
-      "boostClock": 2407,
+      "baseClock": 2010,
+      "boostClock": 2410,
       "memoryBus": 512,
       "memoryBandwidth": 1792,
-      "pciExpress": "5.0 x16",
+      "pciExpress": "5.0",
       "recommendedPsu": 1000,
       "displayOutputs": {
         "hdmi": "2.1b",
         "displayPort": "2.1b",
         "totalOutputs": 4
       },
-      "aiSummary": "O topo absoluto da linha Blackwell — 32GB de GDDR7 e 21.760 CUDA cores garantem performance imbatível em 4K, criação de conteúdo profissional e workloads de IA local. Investimento alto, mas para quem quer o máximo possível em 2026 não há concorrência.",
+      "aiSummary": "A placa mais rápida da série 50: 139 FPS de média em 4K com qualidade máxima e sem DLSS, cerca de 52% acima da RTX 5080. Tem 32 GB de GDDR7 e consome até 575 W, o que pede uma fonte de 1000 W.",
       "fps": {
         "1080p": {
-          "cyberpunk2077Ultra": 280,
-          "fortniteCompetitive": 480,
-          "msfs2024Ultra": 110,
-          "avg": 290
+          "avg": 240.0
         },
         "1440p": {
-          "cyberpunk2077Ultra": 240,
-          "fortniteCompetitive": 460,
-          "msfs2024Ultra": 95,
-          "avg": 265
+          "avg": 205.8
         },
         "4K": {
-          "cyberpunk2077Ultra": 145,
-          "fortniteCompetitive": 360,
-          "msfs2024Ultra": 70,
-          "avg": 192
+          "avg": 139.3
         }
       },
+      "benchmarkNote": null,
       "adjacentGpus": {
         "stepDown": "rtx-5080",
         "stepUp": ""
       },
       "inStock": true,
-      "metaDescription": "RTX 5090: specs completos, benchmarks em 4K e onde comprar no Brasil."
+      "metaDescription": "RTX 5090: especificações oficiais, FPS médio em 1080p, 1440p e 4K e onde comprar no Brasil."
     }
   ]
 }
