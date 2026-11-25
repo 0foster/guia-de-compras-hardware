@@ -1,4 +1,15 @@
-import { applyCriteria, SORT_KEYS, type Criteria, type Evaluation, type SortKey } from '../../utils/criteria';
+import {
+  applyCriteria,
+  FIT_LABELS,
+  hasMonitor,
+  recommend,
+  REFRESH_RATES,
+  SORT_KEYS,
+  type Criteria,
+  type Evaluation,
+  type FitLevel,
+  type SortKey,
+} from '../../utils/criteria';
 import type { Catalog } from '../../utils/catalog';
 import { RESOLUTIONS, type Resolution } from '../../utils/games';
 import { formatFps } from '../../utils/format';
@@ -17,6 +28,13 @@ function fpsColor(value: number): string {
   return 'text-red-600 dark:text-red-500';
 }
 
+const FIT_PILL: Record<FitLevel, string> = {
+  ideal: 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300',
+  surplus: 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300',
+  playable: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
+  insufficient: 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300',
+};
+
 function initFilters() {
   const grid = document.getElementById('gpu-grid');
   const cards = document.querySelectorAll<HTMLElement>('.gpu-card');
@@ -24,6 +42,7 @@ function initFilters() {
   const clearBtns = document.querySelectorAll<HTMLButtonElement>('[data-filter-role="clear-filters"]');
   const resultsCount = document.querySelector<HTMLElement>('[data-filter-role="results-count"]');
   const activeFilters = document.querySelector<HTMLElement>('[data-filter-role="active-filters"]');
+  const gamesCounts = document.querySelectorAll<HTMLElement>('[data-filter-role="games-count"]');
   const sidebarToggle = document.getElementById('sidebar-toggle');
   const sidebar = document.getElementById('sidebar');
   const mobileFilterBtn = document.getElementById('mobile-filter-btn');
@@ -45,61 +64,118 @@ function initFilters() {
 
   /** Lê os controles e monta os critérios (valores repetidos das cópias são ignorados). */
   function readCriteria(): Criteria {
-    const resolutions = new Set<Resolution>();
-    const criteria: Criteria = {};
+    const c: Criteria = {};
+    const games = new Set<string>();
 
     controls.forEach((el) => {
       const value = el.value;
       if (!isSelect(el) && !el.checked) return;
       switch (el.dataset.filter) {
         case 'resolution':
-          if (RESOLUTIONS.includes(value as Resolution)) resolutions.add(value as Resolution);
+          if (RESOLUTIONS.includes(value as Resolution)) c.resolution = value as Resolution;
           break;
-        case 'vram':
-          criteria.minVram = parseInt(value, 10) || 0;
+        case 'hz': {
+          const hz = parseInt(value, 10);
+          if ((REFRESH_RATES as readonly number[]).includes(hz)) c.refreshRate = hz;
           break;
+        }
         case 'game':
-          if (value) criteria.game = value;
+          if (value) games.add(value);
           break;
         case 'category':
-          if (value) criteria.category = value;
+          if (value) c.category = value;
           break;
-        case 'fps':
-          criteria.minFps = parseInt(value, 10) || 0;
+        case 'vram':
+          if (parseInt(value, 10) > 0) c.minVram = parseInt(value, 10);
           break;
         case 'psu':
-          criteria.psuWatts = parseInt(value, 10) || 0;
+          if (parseInt(value, 10) > 0) c.psuWatts = parseInt(value, 10);
           break;
         case 'sort':
-          if ((SORT_KEYS as readonly string[]).includes(value)) criteria.sort = value as SortKey;
+          if ((SORT_KEYS as readonly string[]).includes(value)) c.sort = value as SortKey;
           break;
       }
     });
 
-    criteria.resolutions = [...resolutions];
-    return criteria;
+    if (games.size) c.games = [...games];
+    return c;
   }
 
-  /** O card mostra o FPS do critério escolhido quando ele é diferente do padrão. */
-  function showsMetric(criteria: Criteria): boolean {
-    return Boolean(criteria.game || criteria.category || criteria.minFps || criteria.resolutions?.length === 1);
+  /** Ajusta os controles (nas duas cópias) para refletir os critérios. */
+  function setControls(c: Criteria) {
+    controls.forEach((el) => {
+      const filter = el.dataset.filter;
+      if (isSelect(el)) {
+        let value = el.value;
+        if (filter === 'psu') value = String(c.psuWatts ?? 0);
+        else if (filter === 'sort') value = c.sort ?? '';
+        if (![...el.options].some((o) => o.value === value)) {
+          // Valor vindo de um link que não está entre as opções (ex.: fonte de 700 W).
+          el.add(new Option(filter === 'psu' ? `${value} W` : value, value));
+        }
+        el.value = value;
+      } else if (el.type === 'checkbox') {
+        if (filter === 'game') el.checked = (c.games ?? []).includes(el.value);
+      } else if (el.type === 'radio') {
+        if (filter === 'resolution') el.checked = el.value === (c.resolution ?? '');
+        else if (filter === 'hz') el.checked = el.value === String(c.refreshRate ?? 0);
+        else if (filter === 'vram') el.checked = el.value === String(c.minVram ?? 0);
+        else if (filter === 'category') el.checked = el.value === (c.category ?? '');
+      }
+    });
   }
 
-  function updateCardMetric(card: HTMLElement, evaluation: Evaluation | undefined, visible: boolean) {
-    const el = card.querySelector<HTMLElement>('[data-card-metric]');
-    if (!el) return;
-    if (!evaluation || !visible) {
-      el.classList.add('hidden');
+  /** O card mostra a situação e o FPS de referência quando há monitor, jogos ou tipo escolhidos. */
+  function showsMetric(c: Criteria): boolean {
+    return Boolean(hasMonitor(c) || c.games?.length || c.category);
+  }
+
+  function updateCard(card: HTMLElement, evaluation: Evaluation | undefined, showMetric: boolean, badge: string) {
+    const metricEl = card.querySelector<HTMLElement>('[data-card-metric]');
+    const badgeEl = card.querySelector<HTMLElement>('[data-card-recommended]');
+
+    if (badgeEl) {
+      badgeEl.textContent = badge;
+      badgeEl.classList.toggle('hidden', !badge);
+    }
+    card.classList.toggle('ring-2', Boolean(badge));
+    card.classList.toggle('ring-green-600', Boolean(badge));
+
+    // As etiquetas fixas (resolução ideal e FPS nela) saem quando a situação no monitor aparece.
+    card.querySelectorAll<HTMLElement>('[data-card-static]').forEach((el) => el.classList.toggle('hidden', showMetric));
+
+    if (!metricEl) return;
+    if (!evaluation || !showMetric) {
+      metricEl.classList.add('hidden');
       return;
     }
-    const { label, resolution, value } = evaluation.metric;
-    el.innerHTML = '';
-    el.append(`${label.charAt(0).toUpperCase()}${label.slice(1)} em ${resolution}: `);
+
+    const { label, resolution, value, worst } = evaluation.metric;
+    metricEl.innerHTML = '';
+
+    if (evaluation.fit) {
+      const pill = document.createElement('span');
+      pill.className = `inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${FIT_PILL[evaluation.fit]}`;
+      pill.textContent = FIT_LABELS[evaluation.fit];
+      metricEl.append(pill);
+    }
+
+    const line = document.createElement('p');
+    line.append(`${label.charAt(0).toUpperCase()}${label.slice(1)} em ${resolution}: `);
     const strong = document.createElement('strong');
     strong.className = fpsColor(value);
     strong.textContent = `${formatFps(value)} FPS`;
-    el.append(strong);
-    el.classList.remove('hidden');
+    line.append(strong);
+    metricEl.append(line);
+
+    if (worst) {
+      const w = document.createElement('p');
+      w.className = 'text-xs text-gray-500 dark:text-gray-400';
+      w.textContent = `Mais pesado: ${worst.name} (${formatFps(worst.value)} FPS)`;
+      metricEl.append(w);
+    }
+
+    metricEl.classList.remove('hidden');
   }
 
   function applyFilters() {
@@ -107,7 +183,8 @@ function initFilters() {
     const criteria = readCriteria();
     const results = applyCriteria(catalog, criteria);
     const bySlug = new Map(results.map((e) => [e.gpu.slug, e]));
-    const metricVisible = showsMetric(criteria);
+    const showMetric = showsMetric(criteria);
+    const rec = recommend(results);
 
     // Reordena os cards na ordem pedida; os que não passam ficam escondidos no fim.
     const cardBySlug = new Map([...cards].map((c) => [c.dataset.slug ?? '', c]));
@@ -116,10 +193,17 @@ function initFilters() {
       if (card) grid?.append(card);
     });
     cards.forEach((card) => {
-      const evaluation = bySlug.get(card.dataset.slug ?? '');
+      const slug = card.dataset.slug ?? '';
+      const evaluation = bySlug.get(slug);
       card.classList.toggle('hidden', !evaluation);
       if (!evaluation) grid?.append(card);
-      updateCardMetric(card, evaluation, metricVisible);
+      const badge =
+        rec && rec.evaluation.gpu.slug === slug
+          ? rec.kind === 'recommended'
+            ? 'Recomendada para você'
+            : 'A mais próxima do seu monitor'
+          : '';
+      updateCard(card, evaluation, showMetric, badge);
     });
 
     if (resultsCount) {
@@ -128,8 +212,12 @@ function initFilters() {
       const strong = document.createElement('span');
       strong.className = 'font-semibold text-gray-900 dark:text-gray-100';
       strong.textContent = String(n);
-      resultsCount.append(strong, n === 1 ? ' placa atende' : ' placas atendem');
+      resultsCount.append(strong, n === 1 ? ' placa' : ' placas');
+      if (hasMonitor(criteria)) resultsCount.append(' para o seu monitor');
     }
+
+    const nGames = criteria.games?.length ?? 0;
+    gamesCounts.forEach((el) => (el.textContent = nGames ? `(${nGames})` : ''));
 
     renderActiveFilters(criteria);
 
@@ -177,30 +265,6 @@ function initFilters() {
       applyFilters();
     });
   });
-
-  /** Ajusta os controles (nas duas cópias) para refletir os critérios. */
-  function setControls(c: Criteria) {
-    controls.forEach((el) => {
-      const filter = el.dataset.filter;
-      if (isSelect(el)) {
-        let value = el.value;
-        if (filter === 'game') value = c.game ?? '';
-        else if (filter === 'psu') value = String(c.psuWatts ?? 0);
-        else if (filter === 'sort') value = c.sort ?? 'catalog';
-        if (![...el.options].some((o) => o.value === value)) {
-          // Valor vindo de um link que não está entre as opções (ex.: fonte de 700 W).
-          el.add(new Option(filter === 'psu' ? `${value} W` : value, value));
-        }
-        el.value = value;
-      } else if (el.type === 'checkbox') {
-        if (filter === 'resolution') el.checked = (c.resolutions ?? []).includes(el.value as Resolution);
-      } else if (el.type === 'radio') {
-        if (filter === 'vram') el.checked = el.value === String(c.minVram ?? 0);
-        else if (filter === 'fps') el.checked = el.value === String(c.minFps ?? 0);
-        else if (filter === 'category') el.checked = el.value === (c.category ?? '');
-      }
-    });
-  }
 
   clearBtns.forEach((btn) => {
     btn.addEventListener('click', () => {

@@ -1,150 +1,224 @@
 import { describe, it, expect } from 'vitest';
 import { buildCatalog } from './catalog';
-import { applyCriteria, evaluate, evaluateAll, fpsMetric, metricResolution, efficiency } from './criteria';
+import {
+  applyCriteria,
+  classify,
+  evaluate,
+  evaluateAll,
+  efficiency,
+  fpsMetric,
+  metricResolution,
+  recommend,
+  effectiveSort,
+  type Criteria,
+} from './criteria';
 
 const catalog = buildCatalog();
 const gpu = (slug: string) => catalog.gpus.find((g) => g.slug === slug)!;
 const slugs = (list: { gpu: { slug: string } }[]) => list.map((e) => e.gpu.slug);
+const fits = (c: Criteria) => Object.fromEntries(evaluateAll(catalog, c).map((e) => [e.gpu.slug, e.fit]));
+const recommended = (c: Criteria) => recommend(applyCriteria(catalog, c));
 const ALL = catalog.gpus.map((g) => g.slug);
 
-describe('applyCriteria — filtros que já existiam (mesmo comportamento de antes)', () => {
-  it('sem critérios, todas as placas passam na ordem do catálogo', () => {
-    expect(slugs(applyCriteria(catalog, {}))).toEqual(ALL);
+describe('classify — situação da placa no monitor', () => {
+  it('usa os limites decididos (50 FPS, taxa do monitor, 1,5× a taxa)', () => {
+    expect(classify(49.9, 144)).toBe('insufficient');
+    expect(classify(50, 144)).toBe('playable');
+    expect(classify(143.9, 144)).toBe('playable');
+    expect(classify(144, 144)).toBe('ideal');
+    expect(classify(215.9, 144)).toBe('ideal');
+    expect(classify(216, 144)).toBe('surplus');
   });
 
-  it('resolução 4K mostra as placas indicadas para 4K', () => {
-    expect(slugs(applyCriteria(catalog, { resolutions: ['4K'] }))).toEqual(['rtx-5070-ti', 'rtx-5080', 'rtx-5090']);
+  it('em 60 Hz, de 50 a 59 é jogável e a partir de 90 sobra', () => {
+    expect(classify(55, 60)).toBe('playable');
+    expect(classify(60, 60)).toBe('ideal');
+    expect(classify(90, 60)).toBe('surplus');
+  });
+});
+
+describe('sem monitor escolhido', () => {
+  it('todas as placas passam, na ordem do catálogo, sem situação', () => {
+    const result = applyCriteria(catalog, {});
+    expect(slugs(result)).toEqual(ALL);
+    expect(result.every((e) => e.fit === undefined)).toBe(true);
+    expect(recommend(result)).toBeNull();
   });
 
-  it('várias resoluções funcionam como "ou"', () => {
-    expect(slugs(applyCriteria(catalog, { resolutions: ['1080p', '4K'] }))).toEqual(
-      ALL.filter((s) => s !== 'rtx-5070'),
-    );
+  it('o FPS é medido na resolução ideal de cada placa', () => {
+    expect(fpsMetric(gpu('rtx-5070-ti'), {}, catalog)).toEqual({
+      value: 133.1,
+      resolution: '1440p',
+      scope: 'average',
+      label: 'média de 24 jogos',
+    });
+  });
+});
+
+describe('monitor 1440p 144 Hz — o contexto muda com o que a pessoa joga', () => {
+  const monitor: Criteria = { resolution: '1440p', refreshRate: 144 };
+
+  it('média dos 24 jogos: só 5080 e 5090 aproveitam; recomendada 5080', () => {
+    expect(fits(monitor)).toEqual({
+      'rtx-5050': 'playable',
+      'rtx-5060': 'playable',
+      'rtx-5060-ti-8gb': 'playable',
+      'rtx-5060-ti': 'playable',
+      'rtx-5070': 'playable',
+      'rtx-5070-ti': 'playable',
+      'rtx-5080': 'ideal',
+      'rtx-5090': 'ideal',
+    });
+    expect(recommended(monitor)?.evaluation.gpu.slug).toBe('rtx-5080');
   });
 
+  it('Counter-Strike 2: a 5060 já aproveita; da 5070 para cima sobra', () => {
+    const c = { ...monitor, games: ['counter-strike-2'] };
+    expect(fits(c)).toMatchObject({
+      'rtx-5050': 'playable',
+      'rtx-5060': 'ideal',
+      'rtx-5070': 'surplus',
+      'rtx-5090': 'surplus',
+    });
+    expect(recommended(c)).toMatchObject({ kind: 'recommended', evaluation: { gpu: { slug: 'rtx-5060' } } });
+  });
+
+  it('Corrida (F1 24): recomendada 5070', () => {
+    const c = { ...monitor, category: 'corrida' };
+    expect(fits(c)).toMatchObject({ 'rtx-5060-ti': 'playable', 'rtx-5070': 'ideal', 'rtx-5070-ti': 'ideal', 'rtx-5080': 'surplus' });
+    expect(recommended(c)?.evaluation.gpu.slug).toBe('rtx-5070');
+  });
+
+  it('Tiro (média): 5070 aproveita, mas o card avisa o jogo mais pesado', () => {
+    const m = fpsMetric(gpu('rtx-5070'), { ...monitor, category: 'tiro' }, catalog);
+    expect(m).toEqual({
+      value: 184.7,
+      resolution: '1440p',
+      scope: 'category',
+      label: 'média de Tiro (FPS)',
+      worst: { name: 'S.T.A.L.K.E.R. 2', value: 66.6 },
+    });
+    expect(recommended({ ...monitor, category: 'tiro' })?.evaluation.gpu.slug).toBe('rtx-5070');
+  });
+
+  it('a ordem padrão é "mais adequada": aproveitam (da mais simples), sobram, jogáveis (mais perto primeiro)', () => {
+    const c = { ...monitor, games: ['counter-strike-2'] };
+    expect(effectiveSort(c)).toBe('fit');
+    expect(slugs(applyCriteria(catalog, c))).toEqual([
+      'rtx-5060',
+      'rtx-5060-ti',
+      'rtx-5060-ti-8gb',
+      'rtx-5070',
+      'rtx-5070-ti',
+      'rtx-5080',
+      'rtx-5090',
+      'rtx-5050',
+    ]);
+  });
+});
+
+describe('vários jogos escolhidos', () => {
+  it('usa a média dos jogos e informa o mais pesado', () => {
+    const m = fpsMetric(gpu('rtx-5070'), { resolution: '1440p', games: ['counter-strike-2', 'cyberpunk-2077'] }, catalog);
+    expect(m).toEqual({
+      value: 201.5,
+      resolution: '1440p',
+      scope: 'games',
+      label: 'média de 2 jogos escolhidos',
+      worst: { name: 'Cyberpunk 2077', value: 104.2 },
+    });
+  });
+
+  it('um jogo só usa o nome do jogo e não tem "mais pesado"', () => {
+    const m = fpsMetric(gpu('rtx-5070'), { resolution: '1440p', games: ['cyberpunk-2077'] }, catalog);
+    expect(m.label).toBe('Cyberpunk 2077');
+    expect(m.worst).toBeUndefined();
+  });
+
+  it('jogos escolhidos têm prioridade sobre o tipo de jogo; jogos inválidos são ignorados', () => {
+    expect(fpsMetric(gpu('rtx-5070'), { games: ['f1-24'], category: 'tiro', resolution: '4K' }, catalog).value).toBe(119.5);
+    expect(fpsMetric(gpu('rtx-5070'), { games: ['nao-existe'] }, catalog).scope).toBe('average');
+  });
+});
+
+describe('outros monitores', () => {
+  it('4K 60 Hz: as placas abaixo de 50 FPS somem; 5070 e 5070 Ti aproveitam', () => {
+    const c: Criteria = { resolution: '4K', refreshRate: 60 };
+    expect(slugs(applyCriteria(catalog, c))).toEqual(['rtx-5070', 'rtx-5070-ti', 'rtx-5080', 'rtx-5090']);
+    expect(fits(c)['rtx-5050']).toBe('insufficient');
+    expect(recommended(c)?.evaluation.gpu.slug).toBe('rtx-5070');
+  });
+
+  it('1080p 60 Hz: a 5050 já aproveita e as outras sobram', () => {
+    const c: Criteria = { resolution: '1080p', refreshRate: 60 };
+    expect(fits(c)).toMatchObject({ 'rtx-5050': 'ideal', 'rtx-5060': 'surplus', 'rtx-5090': 'surplus' });
+    expect(recommended(c)?.evaluation.gpu.slug).toBe('rtx-5050');
+  });
+
+  it('resolução sem Hz considera 60 Hz', () => {
+    expect(fits({ resolution: '1080p' })['rtx-5050']).toBe('ideal');
+  });
+
+  it('Hz sem resolução usa a resolução ideal de cada placa', () => {
+    expect(metricResolution(gpu('rtx-5090'), { refreshRate: 144 })).toBe('4K');
+    expect(fits({ refreshRate: 144 })['rtx-5090']).toBe('playable'); // 139,3 FPS em 4K
+  });
+
+  it('quando nenhuma placa aproveita o monitor, indica a mais próxima', () => {
+    expect(recommended({ resolution: '4K', refreshRate: 240 })).toMatchObject({ kind: 'closest', evaluation: { gpu: { slug: 'rtx-5090' } } });
+  });
+});
+
+describe('VRAM e fonte', () => {
   it('VRAM mínima de 16 GB', () => {
     expect(slugs(applyCriteria(catalog, { minVram: 16 }))).toEqual(['rtx-5060-ti', 'rtx-5070-ti', 'rtx-5080', 'rtx-5090']);
   });
 
-  it('VRAM 0 equivale a "sem preferência"', () => {
-    expect(slugs(applyCriteria(catalog, { minVram: 0 }))).toEqual(ALL);
+  it('fonte de 650 W', () => {
+    expect(slugs(applyCriteria(catalog, { psuWatts: 650 }))).toEqual(['rtx-5050', 'rtx-5060', 'rtx-5060-ti-8gb', 'rtx-5060-ti', 'rtx-5070']);
+  });
+
+  it('fonte limita a recomendação: CS2 em 1440p 144 Hz com fonte de 550 W → 5060', () => {
+    const c: Criteria = { resolution: '1440p', refreshRate: 144, games: ['counter-strike-2'], psuWatts: 550 };
+    expect(slugs(applyCriteria(catalog, c))).toEqual(['rtx-5060', 'rtx-5050']);
+    expect(recommended(c)?.evaluation.gpu.slug).toBe('rtx-5060');
   });
 });
 
-describe('fpsMetric — qual FPS mostrar', () => {
-  it('sem resolução escolhida, usa a resolução ideal da placa e a média geral', () => {
-    const m = fpsMetric(gpu('rtx-5070-ti'), {}, catalog);
-    expect(m).toEqual({ value: 133.1, resolution: '1440p', scope: 'average', label: 'média de 24 jogos' });
-  });
-
-  it('com uma resolução escolhida, mede nela', () => {
-    expect(metricResolution(gpu('rtx-5090'), { resolutions: ['1080p'] })).toBe('1080p');
-    expect(fpsMetric(gpu('rtx-5090'), { resolutions: ['1080p'] }, catalog).value).toBe(240.0);
-  });
-
-  it('com várias resoluções escolhidas, volta para a ideal da placa', () => {
-    expect(metricResolution(gpu('rtx-5090'), { resolutions: ['1080p', '1440p'] })).toBe('4K');
-  });
-
-  it('com jogo escolhido, mede no jogo', () => {
-    const m = fpsMetric(gpu('rtx-5070'), { game: 'cyberpunk-2077', resolutions: ['1440p'] }, catalog);
-    expect(m).toEqual({ value: 104.2, resolution: '1440p', scope: 'game', label: 'Cyberpunk 2077' });
-  });
-
-  it('com tipo de jogo escolhido, usa a média dos jogos daquele tipo', () => {
-    // Tiro em 1440p na RTX 5070: CS2 298,8 · DOOM 188,8 · Stalker 2 66,6 → média 184,7
-    const m = fpsMetric(gpu('rtx-5070'), { category: 'tiro', resolutions: ['1440p'] }, catalog);
-    expect(m).toEqual({ value: 184.7, resolution: '1440p', scope: 'category', label: 'média de Tiro (FPS)' });
-  });
-
-  it('jogo tem prioridade sobre tipo de jogo', () => {
-    const m = fpsMetric(gpu('rtx-5070'), { game: 'f1-24', category: 'tiro', resolutions: ['4K'] }, catalog);
-    expect(m.scope).toBe('game');
-    expect(m.value).toBe(119.5);
-  });
-
-  it('jogo ou tipo desconhecido cai na média geral', () => {
-    expect(fpsMetric(gpu('rtx-5070'), { game: 'nao-existe' }, catalog).scope).toBe('average');
-    expect(fpsMetric(gpu('rtx-5070'), { category: 'mmo' }, catalog).scope).toBe('average');
-  });
-});
-
-describe('applyCriteria — critérios novos', () => {
-  it('meta de FPS num jogo (o exemplo do desenho)', () => {
-    // Cyberpunk 1440p, 60+ FPS, 12 GB+, fonte 750 W
-    const result = applyCriteria(catalog, {
-      resolutions: ['1440p'],
-      game: 'cyberpunk-2077',
-      minFps: 60,
-      minVram: 12,
-      psuWatts: 750,
-    });
-    expect(slugs(result)).toEqual(['rtx-5060-ti', 'rtx-5070', 'rtx-5070-ti']);
-  });
-
-  it('meta de 144 FPS em Cyberpunk 1440p com fonte de 750 W não deixa nenhuma placa passar', () => {
-    expect(applyCriteria(catalog, { resolutions: ['1440p'], game: 'cyberpunk-2077', minFps: 144, psuWatts: 750 })).toEqual([]);
-  });
-
-  it('fonte do visitante', () => {
-    expect(slugs(applyCriteria(catalog, { psuWatts: 650 }))).toEqual([
-      'rtx-5050',
-      'rtx-5060',
-      'rtx-5060-ti-8gb',
-      'rtx-5060-ti',
-      'rtx-5070',
-    ]);
-  });
-
-  it('meta pela média do tipo de jogo', () => {
-    // Média de Tiro em 4K ≥ 144: só a 5090 (CS2 348,7 · DOOM 240 · Stalker 78,7 → 222,5) e a 5080 (149,4)
-    expect(slugs(applyCriteria(catalog, { category: 'tiro', minFps: 144, resolutions: ['4K'] }))).toEqual(['rtx-5080', 'rtx-5090']);
-  });
-});
-
-describe('ordenação', () => {
-  it('por desempenho, da mais rápida para a mais lenta', () => {
-    expect(slugs(applyCriteria(catalog, { sort: 'performance', resolutions: ['4K'] }))).toEqual(['rtx-5090', 'rtx-5080', 'rtx-5070-ti']);
-  });
-
-  it('marcar uma resolução também filtra pelas placas indicadas para ela (comportamento atual)', () => {
-    // A 5090 é indicada só para 4K, então some ao marcar 1080p.
-    expect(slugs(applyCriteria(catalog, { sort: 'performance', resolutions: ['1080p'] }))[0]).toBe('rtx-5060-ti-8gb');
-  });
-
-  it('por eficiência (FPS por watt)', () => {
-    const list = applyCriteria(catalog, { sort: 'efficiency', resolutions: ['1440p'] });
-    for (let i = 1; i < list.length; i++) {
-      expect(efficiency(list[i - 1])).toBeGreaterThanOrEqual(efficiency(list[i]));
-    }
-  });
-
-  it('por VRAM e, no empate, desempenho', () => {
-    // 1440p: 5080, 5070 Ti e 5060 Ti têm 16 GB → desempate por FPS; a 5070 (12 GB) vem por último
-    expect(slugs(applyCriteria(catalog, { sort: 'vram', resolutions: ['1440p'] }))).toEqual([
+describe('ordenações escolhidas', () => {
+  it('desempenho, da mais rápida para a mais lenta', () => {
+    expect(slugs(applyCriteria(catalog, { resolution: '4K', refreshRate: 60, sort: 'performance' }))).toEqual([
+      'rtx-5090',
       'rtx-5080',
       'rtx-5070-ti',
-      'rtx-5060-ti',
       'rtx-5070',
-      'rtx-5060-ti-8gb',
-      'rtx-5060',
     ]);
   });
 
-  it('por consumo, do menor para o maior', () => {
-    expect(slugs(applyCriteria(catalog, { sort: 'power' }))[0]).toBe('rtx-5050');
-    expect(slugs(applyCriteria(catalog, { sort: 'power' })).at(-1)).toBe('rtx-5090');
+  it('eficiência (FPS por watt)', () => {
+    const list = applyCriteria(catalog, { resolution: '1440p', sort: 'efficiency' });
+    for (let i = 1; i < list.length; i++) expect(efficiency(list[i - 1])).toBeGreaterThanOrEqual(efficiency(list[i]));
+  });
+
+  it('VRAM e, no empate, desempenho', () => {
+    expect(slugs(applyCriteria(catalog, { sort: 'vram', resolution: '1440p' })).slice(0, 3)).toEqual(['rtx-5090', 'rtx-5080', 'rtx-5070-ti']);
+  });
+
+  it('consumo, do menor para o maior', () => {
+    const list = slugs(applyCriteria(catalog, { sort: 'power' }));
+    expect(list[0]).toBe('rtx-5050');
+    expect(list.at(-1)).toBe('rtx-5090');
   });
 });
 
-describe('evaluate — explica por que a placa passou ou não', () => {
-  it('lista os motivos em linguagem simples', () => {
-    const e = evaluate(gpu('rtx-5080'), { resolutions: ['1440p'], game: 'cyberpunk-2077', minFps: 144, minVram: 12, psuWatts: 750 }, catalog);
+describe('evaluate — explica a decisão em linguagem simples', () => {
+  it('monitor, VRAM e fonte', () => {
+    const e = evaluate(gpu('rtx-5080'), { resolution: '1440p', refreshRate: 144, games: ['cyberpunk-2077'], minVram: 12, psuWatts: 750 }, catalog);
+    expect(e.fit).toBe('playable');
     expect(e.passes).toBe(false);
     expect(e.reasons).toEqual([
-      { key: 'resolution', ok: true, text: 'Indicada para 1440p e 4K' },
+      { key: 'monitor', ok: true, text: 'Jogável: Cyberpunk 2077 a 137,6 FPS em 1440p (monitor de 144 Hz)' },
       { key: 'vram', ok: true, text: '16 GB de VRAM (mínimo 12 GB)' },
-      { key: 'fps', ok: false, text: 'Cyberpunk 2077 em 1440p: 137,6 FPS (meta 144)' },
       { key: 'psu', ok: false, text: 'Pede fonte de 850 W (a sua: 750 W)' },
     ]);
   });
