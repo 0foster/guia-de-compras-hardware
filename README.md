@@ -62,6 +62,7 @@ A estrutura de pastas do projeto está organizada da seguinte maneira:
 src/
 ├── components/
 │   ├── filter/      → Componentes de filtro (FilterPanel.astro, filter.ts)
+│   ├── compare/     → Comparativo (CompareTray, compare-page.ts, compare-tray.ts)
 │   ├── gpu/         → Componentes de interface das placas (GpuCard, GpuSpecTable, FpsBenchmark, BuyButton, AdjacentGpus)
 │   ├── layout/      → Componentes estruturais (BaseLayout, Header, Footer)
 │   ├── search/      → Sistema de busca (SearchDropdown.astro, search.ts)
@@ -92,7 +93,8 @@ O site é fortemente guiado a dados (*data-driven*), baseando-se em dois arquivo
 
 **O que já está pronto:**
 - ✅ Catálogo de 8 GPUs da série RTX 50 (5050 a 5090, com a 5060 Ti em 8 GB e 16 GB), com especificações oficiais da NVIDIA e FPS médio do TechPowerUp
-- ✅ Filtros client-side rápidos (resolução, VRAM)
+- ✅ Filtros por resolução, jogo, tipo de jogo, meta de FPS, VRAM e fonte, com ordenação e link compartilhável (filtros na URL)
+- ✅ Comparativo de até 3 placas lado a lado (`/comparar`), com barra de seleção no rodapé
 - ✅ Suporte completo a Dark Mode
 - ✅ SEO Avançado (Sitemap, tags Meta, JSON-LD Schemas)
 - ✅ Arquitetura base implementada (Astro + Tailwind)
