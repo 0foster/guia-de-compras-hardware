@@ -1,3 +1,10 @@
+import { applyCriteria, type Criteria } from '../../utils/criteria';
+import type { Catalog } from '../../utils/catalog';
+import type { Resolution } from '../../utils/games';
+
+/** Catálogo das GPUs embutido na página pelo index.astro. */
+const catalog = (window as unknown as { __GPU_CATALOG__?: Catalog }).__GPU_CATALOG__;
+
 function initFilters() {
   const cards = document.querySelectorAll<HTMLElement>('.gpu-card');
   const filterInputs = document.querySelectorAll<HTMLInputElement>('[data-filter]');
@@ -23,46 +30,41 @@ function initFilters() {
     });
   }
 
-  function applyFilters() {
-    const active: Record<string, string[]> = {};
+  /**
+   * Lê os controles do painel e monta os critérios.
+   * Os controles existem duas vezes (sidebar e gaveta mobile) e ficam sincronizados,
+   * então valores repetidos são ignorados.
+   */
+  function readCriteria(): Criteria {
+    const resolutions = new Set<Resolution>();
+    let minVram = 0;
 
     filterInputs.forEach((input) => {
-      const filterType = input.dataset.filter!;
-      if (input.type === 'radio') {
-        if (input.checked && input.value !== '0') {
-          active[filterType] = [input.value];
-        }
-      } else if (input.checked) {
-        if (!active[filterType]) active[filterType] = [];
-        if (!active[filterType].includes(input.value)) {
-          active[filterType].push(input.value);
-        }
+      if (!input.checked) return;
+      switch (input.dataset.filter) {
+        case 'resolution':
+          resolutions.add(input.value as Resolution);
+          break;
+        case 'vram':
+          minVram = parseInt(input.value, 10) || 0;
+          break;
       }
     });
+
+    return { resolutions: [...resolutions], minVram };
+  }
+
+  function applyFilters() {
+    if (!catalog) return;
+    const visible = new Set(applyCriteria(catalog, readCriteria()).map((e) => e.gpu.slug));
 
     cards.forEach((card) => {
-      let visible = true;
-
-      // Resolution filter (OR within)
-      if (active.resolution?.length) {
-        const cardRes = (card.dataset.resolution || '').split(',');
-        visible = active.resolution.some((r) => cardRes.includes(r));
-      }
-
-      // VRAM filter (minimum)
-      if (visible && active.vram?.length) {
-        const minVram = parseInt(active.vram[0], 10);
-        const cardVram = parseInt(card.dataset.vram || '0', 10);
-        visible = cardVram >= minVram;
-      }
-
-      card.classList.toggle('hidden', !visible);
+      card.classList.toggle('hidden', !visible.has(card.dataset.slug ?? ''));
     });
 
-    const visibleCards = document.querySelectorAll('.gpu-card:not(.hidden)');
     const noResults = document.getElementById('no-results');
     if (noResults) {
-      noResults.classList.toggle('hidden', visibleCards.length > 0);
+      noResults.classList.toggle('hidden', visible.size > 0);
     }
   }
 

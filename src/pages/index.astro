@@ -6,8 +6,10 @@ import FilterPanel from '../components/filter/FilterPanel.astro';
 import GpuCard from '../components/gpu/GpuCard.astro';
 import WebsiteSchema from '../components/seo/WebsiteSchema.astro';
 import { getAllGpus } from '../utils/gpu';
+import { buildCatalog } from '../utils/catalog';
 
 const gpus = getAllGpus();
+const catalog = buildCatalog();
 ---
 
 <BaseLayout title="Guia de Compras Hardware | Encontre a GPU ideal">
@@ -98,6 +100,9 @@ const gpus = getAllGpus();
     <Footer />
   </div>
 
+  <script is:inline define:vars={{ catalog }}>
+    window.__GPU_CATALOG__ = catalog;
+  </script>
   <script src="../components/filter/filter.ts"></script>
 </BaseLayout>
 

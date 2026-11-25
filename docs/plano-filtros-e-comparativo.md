@@ -59,11 +59,14 @@ Sem preço garantido pela loja, nada de "custo-benefício" até a PA-API destrav
 | Barra de comparação no rodapé | novo |
 | Filtros na URL | novo |
 
+## Pontos em aberto
+- **Resolução: "indicada para" ou "em que eu jogo"?** Hoje, marcar uma resolução esconde as placas que não são *indicadas* para ela (ex.: marcar 1080p esconde a 5090). Para o assistente, a pergunta natural é "em que resolução você joga?", em que a 5090 também serve. Proposta para a etapa 5: o filtro de resolução passa a definir a resolução em que o FPS é medido, sem esconder placas mais fortes; quem quiser evitar "placa demais" usa a ordenação ou a meta de FPS. Decidir antes da etapa 5.
+
 ## Etapas
 Cada etapa é um commit (e uma prévia quando houver mudança visível).
 
 - [x] **1. Catálogo unificado** — um objeto com specs, FPS médio, FPS por jogo e link de compra de cada GPU, com testes. Nada muda na tela.
-- [ ] **2. Motor de critérios** — filtrar, ordenar, escolher qual FPS mostrar e explicar por que cada placa passou. Resolução e VRAM migram para ele; visual igual.
+- [x] **2. Motor de critérios** — filtrar, ordenar, escolher qual FPS mostrar e explicar por que cada placa passou. Resolução e VRAM migram para ele; visual igual.
 - [ ] **3. Lógica do comparativo** — para 2 ou 3 placas: vencedor por linha, % sobre a 1ª placa, veredito. Com testes.
 - [ ] **4. Página `/comparar`** — modelo com as 8 placas, mostra as escolhidas pela URL; cabeçalho fixo com troca/remoção, "só diferenças", resolução selecionável, rolagem lateral no celular. Acessível pela seção "Compare" da página da GPU.
 - [ ] **5. Filtros novos** — jogo, meta de FPS, tipo de jogo, fonte, ordenação, linha de FPS dinâmica no card.
