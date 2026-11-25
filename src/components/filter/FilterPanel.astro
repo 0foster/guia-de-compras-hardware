@@ -1,6 +1,6 @@
 ---
 import { getCategories, getGames } from '../../utils/games';
-import { FPS_TARGETS } from '../../utils/criteria';
+import { REFRESH_RATES, MIN_PLAYABLE_FPS } from '../../utils/criteria';
 
 interface Props {
   namePrefix?: string;
@@ -24,32 +24,65 @@ const selectClass =
 ---
 
 <div class="space-y-6">
-  <!-- Resolução Alvo -->
+  <!-- Seu monitor -->
   <div>
-    <h3 class="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Resolução</h3>
+    <h3 class={headingClass}>Seu monitor</h3>
+    <p class="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">Resolução</p>
     <div class="space-y-2">
+      <label class={optionClass}>
+        <input type="radio" name={`res-${namePrefix}`} value="" data-filter="resolution" class={radioClass} checked />
+        Não sei
+      </label>
       {['1080p', '1440p', '4K'].map((res) => (
-        <label class="flex cursor-pointer items-center gap-3 py-1 sm:py-0 text-sm text-gray-700 dark:text-gray-300">
-          <input type="checkbox" value={res} data-filter="resolution" class="h-5 w-5 sm:h-4 sm:w-4 rounded border-gray-300 accent-[var(--color-brand-red)] dark:border-gray-600" />
+        <label class={optionClass}>
+          <input type="radio" name={`res-${namePrefix}`} value={res} data-filter="resolution" class={radioClass} />
           {res}
         </label>
       ))}
     </div>
+    <p class="mt-3 mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">Taxa de atualização</p>
+    <div class="space-y-2">
+      <label class={optionClass}>
+        <input type="radio" name={`hz-${namePrefix}`} value="0" data-filter="hz" class={radioClass} checked />
+        Não sei
+      </label>
+      {REFRESH_RATES.map((hz) => (
+        <label class={optionClass}>
+          <input type="radio" name={`hz-${namePrefix}`} value={String(hz)} data-filter="hz" class={radioClass} />
+          {hz} Hz
+        </label>
+      ))}
+    </div>
+    <p class="mt-2 text-xs text-gray-400">
+      Mostra como cada placa se sai no seu monitor e esconde as que ficam abaixo de {MIN_PLAYABLE_FPS} FPS. Sem a taxa, consideramos 60 Hz.
+    </p>
   </div>
 
-  <!-- Jogo -->
+  <!-- Jogos -->
   <div>
-    <label for={`game-${namePrefix}`} class={headingClass + ' block'}>Jogo</label>
-    <select id={`game-${namePrefix}`} data-filter="game" data-default="" class={selectClass}>
-      <option value="">Qualquer jogo</option>
-      {gamesByCategory.map(({ category, games }) => (
-        <optgroup label={category.name}>
-          {games.map((g) => (
-            <option value={g.slug}>{g.name}</option>
-          ))}
-        </optgroup>
-      ))}
-    </select>
+    <h3 class={headingClass}>Jogos que você joga</h3>
+    <details class="group rounded-lg border border-gray-200 dark:border-gray-800">
+      <summary class="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm text-gray-700 dark:text-gray-300">
+        <span>Escolher jogos <span data-filter-role="games-count" class="text-gray-400"></span></span>
+        <span aria-hidden="true" class="text-gray-400 transition-transform group-open:rotate-180">▾</span>
+      </summary>
+      <div class="max-h-72 space-y-3 overflow-y-auto border-t border-gray-200 px-3 py-2 dark:border-gray-800">
+        {gamesByCategory.map(({ category, games }) => (
+          <div>
+            <p class="mb-1 text-[11px] font-semibold uppercase tracking-wider text-gray-400">{category.name}</p>
+            <div class="space-y-1.5">
+              {games.map((g) => (
+                <label class={optionClass}>
+                  <input type="checkbox" value={g.slug} data-filter="game" class="h-5 w-5 sm:h-4 sm:w-4 rounded border-gray-300 accent-[var(--color-brand-red)] dark:border-gray-600" />
+                  {g.name}
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </details>
+    <p class="mt-2 text-xs text-gray-400">Com vários jogos, vale a média deles.</p>
   </div>
 
   <!-- Tipo de jogo -->
@@ -67,27 +100,7 @@ const selectClass =
         </label>
       ))}
     </div>
-    <p class="mt-2 text-xs text-gray-400">Com um jogo escolhido, vale o jogo.</p>
-  </div>
-
-  <!-- Meta de FPS -->
-  <div>
-    <h3 class={headingClass}>Meta de FPS</h3>
-    <div class="space-y-2">
-      <label class={optionClass}>
-        <input type="radio" name={`fps-${namePrefix}`} value="0" data-filter="fps" class={radioClass} checked />
-        Sem meta
-      </label>
-      {FPS_TARGETS.map((fps) => (
-        <label class={optionClass}>
-          <input type="radio" name={`fps-${namePrefix}`} value={String(fps)} data-filter="fps" class={radioClass} />
-          {fps}+ FPS
-        </label>
-      ))}
-    </div>
-    <p class="mt-2 text-xs text-gray-400">
-      No jogo escolhido, na média do tipo de jogo ou na média dos 24 jogos. Medido na resolução marcada (ou na ideal de cada placa).
-    </p>
+    <p class="mt-2 text-xs text-gray-400">Usado quando nenhum jogo está escolhido.</p>
   </div>
 
   <!-- VRAM Mínima -->

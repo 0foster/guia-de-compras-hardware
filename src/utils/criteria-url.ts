@@ -8,18 +8,21 @@
  */
 import type { Catalog } from './catalog';
 import { RESOLUTIONS, type Resolution } from './games';
-import { FPS_TARGETS, SORT_KEYS, type Criteria, type SortKey } from './criteria';
+import { REFRESH_RATES, SORT_KEYS, type Criteria, type SortKey } from './criteria';
 
 /** Nomes curtos dos parâmetros, em português, para links legíveis. */
 export const PARAMS = {
-  resolutions: 'res',
-  minVram: 'vram',
-  game: 'jogo',
+  resolution: 'res',
+  refreshRate: 'hz',
+  games: 'jogos',
   category: 'tipo',
-  minFps: 'fps',
+  minVram: 'vram',
   psuWatts: 'fonte',
   sort: 'ordem',
 } as const;
+
+/** Parâmetros de versões anteriores do site, aceitos para não quebrar links antigos. */
+const LEGACY = { game: 'jogo', minFps: 'fps' } as const;
 
 const positiveInt = (raw: string | null): number | undefined => {
   if (!raw) return undefined;
@@ -30,37 +33,39 @@ const positiveInt = (raw: string | null): number | undefined => {
 /** Critérios → query string (sem o "?"). Valores padrão ficam de fora. */
 export function criteriaToQuery(c: Criteria): string {
   const p = new URLSearchParams();
-  if (c.resolutions?.length) p.set(PARAMS.resolutions, c.resolutions.join(','));
-  if (c.game) p.set(PARAMS.game, c.game);
+  if (c.resolution) p.set(PARAMS.resolution, c.resolution);
+  if (c.refreshRate) p.set(PARAMS.refreshRate, String(c.refreshRate));
+  if (c.games?.length) p.set(PARAMS.games, c.games.join(','));
   if (c.category) p.set(PARAMS.category, c.category);
-  if (c.minFps) p.set(PARAMS.minFps, String(c.minFps));
   if (c.minVram) p.set(PARAMS.minVram, String(c.minVram));
   if (c.psuWatts) p.set(PARAMS.psuWatts, String(c.psuWatts));
-  if (c.sort && c.sort !== 'catalog') p.set(PARAMS.sort, c.sort);
+  if (c.sort) p.set(PARAMS.sort, c.sort);
   return p.toString().replace(/%2C/g, ',');
 }
 
 /**
  * Query string → critérios. Ignora valores inválidos (jogo/tipo inexistente,
- * resolução desconhecida, meta de FPS fora de 60/144/240, ordenação inválida).
+ * resolução desconhecida, Hz fora de 60/144/240, ordenação inválida).
  */
 export function queryToCriteria(search: string | URLSearchParams, catalog: Catalog): Criteria {
   const p = typeof search === 'string' ? new URLSearchParams(search) : search;
   const c: Criteria = {};
 
-  const resolutions = (p.get(PARAMS.resolutions) ?? '')
-    .split(',')
-    .filter((r): r is Resolution => RESOLUTIONS.includes(r as Resolution));
-  if (resolutions.length) c.resolutions = [...new Set(resolutions)];
+  // Versões antigas aceitavam várias resoluções separadas por vírgula: vale a primeira válida.
+  const resolution = (p.get(PARAMS.resolution) ?? '').split(',').find((r) => RESOLUTIONS.includes(r as Resolution));
+  if (resolution) c.resolution = resolution as Resolution;
 
-  const game = p.get(PARAMS.game);
-  if (game && catalog.games.some((g) => g.slug === game)) c.game = game;
+  const hz = positiveInt(p.get(PARAMS.refreshRate)) ?? positiveInt(p.get(LEGACY.minFps));
+  if (hz && (REFRESH_RATES as readonly number[]).includes(hz)) c.refreshRate = hz;
+
+  const validGames = new Set(catalog.games.map((g) => g.slug));
+  const games = [...(p.get(PARAMS.games) ?? '').split(','), p.get(LEGACY.game) ?? '']
+    .map((s) => s.trim())
+    .filter((s, i, arr) => validGames.has(s) && arr.indexOf(s) === i);
+  if (games.length) c.games = games;
 
   const category = p.get(PARAMS.category);
   if (category && catalog.categories.some((cat) => cat.slug === category)) c.category = category;
-
-  const fps = positiveInt(p.get(PARAMS.minFps));
-  if (fps && (FPS_TARGETS as readonly number[]).includes(fps)) c.minFps = fps;
 
   const vram = positiveInt(p.get(PARAMS.minVram));
   if (vram) c.minVram = vram;
@@ -75,7 +80,7 @@ export function queryToCriteria(search: string | URLSearchParams, catalog: Catal
 }
 
 export interface ActiveFilter {
-  /** Identifica o que remover: "res:1440p", "jogo", "tipo", "fps", "vram", "fonte". */
+  /** Identifica o que remover: "res", "hz", "jogo:<slug>", "tipo", "vram", "fonte". */
   key: string;
   label: string;
 }
@@ -83,16 +88,16 @@ export interface ActiveFilter {
 /** Etiquetas dos filtros ativos (a ordenação não vira etiqueta). */
 export function describeCriteria(c: Criteria, catalog: Catalog): ActiveFilter[] {
   const out: ActiveFilter[] = [];
-  for (const res of c.resolutions ?? []) out.push({ key: `res:${res}`, label: res });
-  if (c.game) {
-    const game = catalog.games.find((g) => g.slug === c.game);
-    if (game) out.push({ key: 'jogo', label: game.name });
+  if (c.resolution) out.push({ key: 'res', label: `Monitor ${c.resolution}` });
+  if (c.refreshRate) out.push({ key: 'hz', label: `${c.refreshRate} Hz` });
+  for (const slug of c.games ?? []) {
+    const game = catalog.games.find((g) => g.slug === slug);
+    if (game) out.push({ key: `jogo:${slug}`, label: game.name });
   }
   if (c.category) {
     const cat = catalog.categories.find((x) => x.slug === c.category);
     if (cat) out.push({ key: 'tipo', label: cat.name });
   }
-  if (c.minFps) out.push({ key: 'fps', label: `${c.minFps}+ FPS` });
   if (c.minVram) out.push({ key: 'vram', label: `${c.minVram} GB+ de VRAM` });
   if (c.psuWatts) out.push({ key: 'fonte', label: `Fonte de ${c.psuWatts} W` });
   return out;
@@ -101,12 +106,13 @@ export function describeCriteria(c: Criteria, catalog: Catalog): ActiveFilter[] 
 /** Remove um filtro (pela chave da etiqueta) e devolve os critérios novos. */
 export function removeFilter(c: Criteria, key: string): Criteria {
   const next: Criteria = { ...c };
-  if (key.startsWith('res:')) {
-    const res = key.slice(4);
-    next.resolutions = (c.resolutions ?? []).filter((r) => r !== res);
-  } else if (key === 'jogo') delete next.game;
+  if (key.startsWith('jogo:')) {
+    const slug = key.slice(5);
+    next.games = (c.games ?? []).filter((g) => g !== slug);
+    if (next.games.length === 0) delete next.games;
+  } else if (key === 'res') delete next.resolution;
+  else if (key === 'hz') delete next.refreshRate;
   else if (key === 'tipo') delete next.category;
-  else if (key === 'fps') delete next.minFps;
   else if (key === 'vram') delete next.minVram;
   else if (key === 'fonte') delete next.psuWatts;
   return next;
