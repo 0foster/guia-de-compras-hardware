@@ -93,7 +93,7 @@ O site é fortemente guiado a dados (*data-driven*), baseando-se em dois arquivo
 
 **O que já está pronto:**
 - ✅ Catálogo de 8 GPUs da série RTX 50 (5050 a 5090, com a 5060 Ti em 8 GB e 16 GB), com especificações oficiais da NVIDIA e FPS médio do TechPowerUp
-- ✅ Filtros por resolução, jogo, tipo de jogo, meta de FPS, VRAM e fonte, com ordenação e link compartilhável (filtros na URL)
+- ✅ Filtro "Seu monitor" (resolução + Hz) com os jogos que a pessoa joga: cada placa recebe uma situação calculada pelos FPS medidos (não atende, jogável, aproveita o monitor, sobra desempenho) e a mais simples que aproveita o monitor é recomendada. Também tipo de jogo, VRAM, fonte, ordenação e link compartilhável
 - ✅ Comparativo de até 3 placas lado a lado (`/comparar`), com barra de seleção no rodapé
 - ✅ Suporte completo a Dark Mode
 - ✅ SEO Avançado (Sitemap, tags Meta, JSON-LD Schemas)

@@ -59,8 +59,23 @@ Sem preço garantido pela loja, nada de "custo-benefício" até a PA-API destrav
 | Barra de comparação no rodapé | novo |
 | Filtros na URL | novo |
 
-## Pontos em aberto
-- **Resolução: "indicada para" ou "em que eu jogo"?** Hoje, marcar uma resolução esconde as placas que não são *indicadas* para ela (ex.: marcar 1080p esconde a 5090). Para o assistente, a pergunta natural é "em que resolução você joga?", em que a 5090 também serve. Proposta para a etapa 5: o filtro de resolução passa a definir a resolução em que o FPS é medido, sem esconder placas mais fortes; quem quiser evitar "placa demais" usa a ordenação ou a meta de FPS. Decidir antes da etapa 5.
+## Decisão: filtro "Seu monitor" (substitui "Resolução" e "Meta de FPS")
+Toda placa roda em toda resolução; o que importa é a experiência **no monitor do visitante** com **o que ele joga**.
+
+- **Monitor** = resolução + taxa de atualização (60 / 144 / 240 Hz). A resolução deixa de esconder placas "não indicadas".
+- **FPS de referência** = média dos **jogos escolhidos** (vários) → senão média do **tipo de jogo** → senão média dos 24 jogos. O card mostra também o jogo mais pesado da seleção.
+- **Situação de cada placa** (calculada pelos dados, não por opinião):
+
+| Situação | Regra |
+|---|---|
+| Não atende | FPS abaixo de **50** (escondida quando há monitor escolhido) |
+| Jogável | de 50 FPS até a taxa do monitor |
+| Aproveita o monitor | da taxa do monitor até 1,5× ela |
+| Sobra desempenho | 1,5× a taxa do monitor ou mais |
+
+- **Recomendada** = a placa mais simples que aproveita o monitor (aproveita ou sobra, com menor FPS). Se nenhuma chega lá, mostra a mais próxima.
+- Com monitor escolhido, a ordenação padrão passa a ser "mais adequada ao seu monitor".
+- Links antigos continuam funcionando (`jogo=` vira `jogos=`, `fps=` vira `hz=`, várias resoluções → a primeira).
 
 ## Etapas
 Cada etapa é um commit (e uma prévia quando houver mudança visível).
@@ -73,6 +88,7 @@ Cada etapa é um commit (e uma prévia quando houver mudança visível).
 - [x] **6. Filtros na URL** — etiquetas removíveis, contador, link compartilhável (é por ele que o assistente entregará o resultado).
 - [x] **7. Seleção para comparar** — botão "Comparar" nos cards e na página da GPU, barra no rodapé com até 3 placas guardadas no navegador do visitante.
 - [x] **8. Pontos de entrada** — link "Comparar" no topo, página `/comparar` vazia com escolha das placas; opcional (não feito): páginas fixas dos pares mais buscados.
+- [x] **9. Filtro "Seu monitor"** — classificação por monitor e jogos (decisão acima), vários jogos, etiqueta de situação e "Recomendada" nos cards, URL nova com compatibilidade.
 - [ ] **Depois: assistente** — perguntas que montam o `Criteria` da etapa 2 e entregam o link da etapa 6.
 
 ## Onde ficou cada parte
@@ -88,8 +104,8 @@ Cada etapa é um commit (e uma prévia quando houver mudança visível).
 | Filtros da home | `src/components/filter/FilterPanel.astro`, `filter.ts`, `src/pages/index.astro` |
 
 ## Como o assistente vai usar isto
-1. Perguntas → montam um `Criteria` (ex.: `{ resolutions: ['1440p'], category: 'tiro', minFps: 144, psuWatts: 650 }`).
-2. `applyCriteria(buildCatalog(), criteria)` → placas recomendadas; `evaluate(...).reasons` → o "porquê" de cada uma; `evaluateAll` → as que quase passaram.
+1. Perguntas → montam um `Criteria` (ex.: `{ resolution: '1440p', refreshRate: 144, games: ['counter-strike-2', 'cyberpunk-2077'], psuWatts: 650 }`).
+2. `applyCriteria(buildCatalog(), criteria)` → placas que servem, já na ordem "mais adequada"; `recommend(...)` → a recomendada (a mais simples que aproveita o monitor, ou a mais próxima); `evaluate(...).reasons` → o "porquê"; `evaluateAll` → também as que não atendem.
 3. Resultado completo: `/?` + `criteriaToQuery(criteria)`.
 
 ## Referências de UX
