@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import BreadcrumbSchema from '../components/seo/BreadcrumbSchema.astro';
+import { buildCatalog } from '../utils/catalog';
+import { resolveSelection } from '../utils/compare';
+import { renderCompare } from '../utils/compare-render';
+
+const catalog = buildCatalog();
+
+// Comparação padrão já renderizada no build: o Google e quem estiver sem
+// JavaScript veem uma comparação completa. No navegador, a página lê ?gpus=.
+const initial = resolveSelection(undefined, catalog);
+const html = renderCompare(
+  { slugs: initial.map((g) => g.slug), res: initial[0].targetResolution[0], onlyDiff: false },
+  catalog,
+);
+---
+
+<BaseLayout
+  title="Comparar placas de vídeo RTX 50 lado a lado | Guia de Compras Hardware"
+  description="Compare até 3 placas NVIDIA RTX 50 lado a lado: FPS médio, FPS em 24 jogos, especificações oficiais e consumo."
+>
+  <BreadcrumbSchema
+    slot="head"
+    trail={[
+      { name: 'Home', url: '/' },
+      { name: 'Comparar', url: '/comparar' },
+    ]}
+  />
+
+  <div class="flex min-h-screen flex-col">
+    <Header />
+
+    <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-8 lg:px-6">
+      <nav class="mb-6 text-sm text-gray-500 dark:text-gray-400">
+        <a href="/" class="hover:text-gray-700 dark:hover:text-gray-200">Home</a>
+        <span class="mx-2">/</span>
+        <span class="text-gray-900 dark:text-gray-100">Comparar</span>
+      </nav>
+
+      <h1 class="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">Comparar placas de vídeo</h1>
+      <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">
+        Escolha de 2 a 3 placas para ver desempenho, especificações e consumo lado a lado.
+      </p>
+
+      <div id="compare-root" set:html={html} />
+    </main>
+
+    <Footer />
+  </div>
+
+  <script is:inline define:vars={{ catalog }}>
+    window.__GPU_CATALOG__ = catalog;
+  </script>
+  <script src="../components/compare/compare-page.ts"></script>
+</BaseLayout>

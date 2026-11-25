@@ -5,15 +5,18 @@ import Footer from '../components/layout/Footer.astro';
 import FilterPanel from '../components/filter/FilterPanel.astro';
 import GpuCard from '../components/gpu/GpuCard.astro';
 import WebsiteSchema from '../components/seo/WebsiteSchema.astro';
+import CompareTray from '../components/compare/CompareTray.astro';
 import { getAllGpus } from '../utils/gpu';
+import { buildCatalog } from '../utils/catalog';
 
 const gpus = getAllGpus();
+const catalog = buildCatalog();
 ---
 
 <BaseLayout title="Guia de Compras Hardware | Encontre a GPU ideal">
   <WebsiteSchema slot="head" />
   <div class="flex min-h-screen flex-col">
-    <Header />
+    <Header showFilters />
 
     <div class="mx-auto flex w-full max-w-screen-2xl flex-1">
       <!-- Desktop Sidebar -->
@@ -67,6 +70,28 @@ const gpus = getAllGpus();
           </p>
         </div>
 
+        <!-- Barra de resultados: contador, filtros ativos e ordenação -->
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <p data-filter-role="results-count" class="text-sm text-gray-600 dark:text-gray-400" aria-live="polite">
+            <span class="font-semibold text-gray-900 dark:text-gray-100">{gpus.length}</span> placas
+          </p>
+          <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            Ordenar por
+            <select
+              data-filter="sort"
+              data-default="catalog"
+              class="rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-base sm:text-sm text-gray-900 focus:border-[var(--color-brand-red)] focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+            >
+              <option value="catalog">Padrão (da mais simples à mais forte)</option>
+              <option value="performance">Desempenho</option>
+              <option value="efficiency">Eficiência (FPS por watt)</option>
+              <option value="vram">Mais VRAM</option>
+              <option value="power">Menor consumo</option>
+            </select>
+          </label>
+        </div>
+        <div data-filter-role="active-filters" class="mb-4 hidden flex-wrap gap-2"></div>
+
         <!-- GPU Grid -->
         <div id="gpu-grid" class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {gpus.map((gpu) => {
@@ -98,6 +123,11 @@ const gpus = getAllGpus();
     <Footer />
   </div>
 
+  <CompareTray />
+
+  <script is:inline define:vars={{ catalog }}>
+    window.__GPU_CATALOG__ = catalog;
+  </script>
   <script src="../components/filter/filter.ts"></script>
 </BaseLayout>
 

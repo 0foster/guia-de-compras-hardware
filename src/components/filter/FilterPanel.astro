@@ -1,9 +1,26 @@
 ---
+import { getCategories, getGames } from '../../utils/games';
+import { FPS_TARGETS } from '../../utils/criteria';
+
 interface Props {
   namePrefix?: string;
 }
 
 const { namePrefix = 'default' } = Astro.props;
+const categories = getCategories();
+const gamesByCategory = categories.map((c) => ({
+  category: c,
+  games: getGames()
+    .filter((g) => g.category === c.slug)
+    .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')),
+}));
+const PSU_OPTIONS = [550, 600, 650, 750, 850, 1000];
+
+const headingClass = 'mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400';
+const optionClass = 'flex cursor-pointer items-center gap-3 py-1 sm:py-0 text-sm text-gray-700 dark:text-gray-300';
+const radioClass = 'h-5 w-5 sm:h-4 sm:w-4 border-gray-300 accent-[var(--color-brand-red)] dark:border-gray-600';
+const selectClass =
+  'w-full rounded-lg border border-gray-300 bg-white px-2.5 py-2 text-base sm:text-sm text-gray-900 focus:border-[var(--color-brand-red)] focus:outline-none focus:ring-1 focus:ring-[var(--color-brand-red)] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100';
 ---
 
 <div class="space-y-6">
@@ -18,6 +35,59 @@ const { namePrefix = 'default' } = Astro.props;
         </label>
       ))}
     </div>
+  </div>
+
+  <!-- Jogo -->
+  <div>
+    <label for={`game-${namePrefix}`} class={headingClass + ' block'}>Jogo</label>
+    <select id={`game-${namePrefix}`} data-filter="game" data-default="" class={selectClass}>
+      <option value="">Qualquer jogo</option>
+      {gamesByCategory.map(({ category, games }) => (
+        <optgroup label={category.name}>
+          {games.map((g) => (
+            <option value={g.slug}>{g.name}</option>
+          ))}
+        </optgroup>
+      ))}
+    </select>
+  </div>
+
+  <!-- Tipo de jogo -->
+  <div>
+    <h3 class={headingClass}>Tipo de jogo</h3>
+    <div class="space-y-2">
+      <label class={optionClass}>
+        <input type="radio" name={`category-${namePrefix}`} value="" data-filter="category" class={radioClass} checked />
+        Todos
+      </label>
+      {categories.map((c) => (
+        <label class={optionClass}>
+          <input type="radio" name={`category-${namePrefix}`} value={c.slug} data-filter="category" class={radioClass} />
+          {c.name}
+        </label>
+      ))}
+    </div>
+    <p class="mt-2 text-xs text-gray-400">Com um jogo escolhido, vale o jogo.</p>
+  </div>
+
+  <!-- Meta de FPS -->
+  <div>
+    <h3 class={headingClass}>Meta de FPS</h3>
+    <div class="space-y-2">
+      <label class={optionClass}>
+        <input type="radio" name={`fps-${namePrefix}`} value="0" data-filter="fps" class={radioClass} checked />
+        Sem meta
+      </label>
+      {FPS_TARGETS.map((fps) => (
+        <label class={optionClass}>
+          <input type="radio" name={`fps-${namePrefix}`} value={String(fps)} data-filter="fps" class={radioClass} />
+          {fps}+ FPS
+        </label>
+      ))}
+    </div>
+    <p class="mt-2 text-xs text-gray-400">
+      No jogo escolhido, na média do tipo de jogo ou na média dos 24 jogos. Medido na resolução marcada (ou na ideal de cada placa).
+    </p>
   </div>
 
   <!-- VRAM Mínima -->
@@ -36,6 +106,18 @@ const { namePrefix = 'default' } = Astro.props;
         </label>
       ))}
     </div>
+  </div>
+
+  <!-- Fonte -->
+  <div>
+    <label for={`psu-${namePrefix}`} class={headingClass + ' block'}>Sua fonte</label>
+    <select id={`psu-${namePrefix}`} data-filter="psu" data-default="0" class={selectClass}>
+      <option value="0">Não sei / qualquer</option>
+      {PSU_OPTIONS.map((w) => (
+        <option value={String(w)}>{w} W</option>
+      ))}
+    </select>
+    <p class="mt-2 text-xs text-gray-400">Mostra as placas cuja fonte recomendada pela NVIDIA cabe na sua.</p>
   </div>
 
   <!-- Botão limpar filtros -->
