@@ -6,7 +6,7 @@
  * FPS médio, FPS por jogo e se há link de compra. É gerado no build e pode ser
  * embutido na página como JSON para uso no navegador.
  */
-import { getAllGpus, getAffiliateLinks } from './gpu';
+import { getAllGpus, getAffiliateLinks, type StoreLink } from './gpu';
 import { getCategories, getGames, RESOLUTIONS, type FpsByResolution, type GameCategory, type Resolution } from './games';
 
 export interface CatalogGpu {
@@ -36,6 +36,8 @@ export interface CatalogGpu {
   gameFps: Record<string, FpsByResolution>;
   /** Há pelo menos um link de compra (Amazon ou Mercado Livre). */
   hasBuyLink: boolean;
+  /** Links de compra (sem preço: só exibimos preço garantido pela loja). */
+  buyLinks: { amazon?: StoreLink; mercadoLivre?: StoreLink };
   inStock: boolean;
 }
 
@@ -82,6 +84,10 @@ export function buildCatalog(): Catalog {
         games.filter((g) => g.fps[gpu.slug]).map((g) => [g.slug, g.fps[gpu.slug]]),
       ),
       hasBuyLink: Boolean(links?.amazon || links?.mercadoLivre),
+      buyLinks: {
+        ...(links?.amazon ? { amazon: links.amazon } : {}),
+        ...(links?.mercadoLivre ? { mercadoLivre: links.mercadoLivre } : {}),
+      },
       inStock: gpu.inStock,
     };
   });

@@ -36,6 +36,13 @@ describe('buildCatalog', () => {
     expect(catalog.gpus.find((g) => g.slug === 'rtx-5070')!.hasBuyLink).toBe(true);
   });
 
+  it('carries the buy links (never prices)', () => {
+    const gpu = catalog.gpus.find((g) => g.slug === 'rtx-5070')!;
+    expect(gpu.buyLinks.amazon?.url).toMatch(/^https:\/\//);
+    expect(gpu.buyLinks.amazon).not.toHaveProperty('displayPrice');
+    expect(catalog.gpus.find((g) => g.slug === 'rtx-5090')!.buyLinks).toEqual({});
+  });
+
   it('lists games (without FPS) and categories', () => {
     expect(catalog.games).toHaveLength(24);
     expect(catalog.games[0]).not.toHaveProperty('fps');

@@ -67,13 +67,30 @@ Cada etapa é um commit (e uma prévia quando houver mudança visível).
 
 - [x] **1. Catálogo unificado** — um objeto com specs, FPS médio, FPS por jogo e link de compra de cada GPU, com testes. Nada muda na tela.
 - [x] **2. Motor de critérios** — filtrar, ordenar, escolher qual FPS mostrar e explicar por que cada placa passou. Resolução e VRAM migram para ele; visual igual.
-- [ ] **3. Lógica do comparativo** — para 2 ou 3 placas: vencedor por linha, % sobre a 1ª placa, veredito. Com testes.
-- [ ] **4. Página `/comparar`** — modelo com as 8 placas, mostra as escolhidas pela URL; cabeçalho fixo com troca/remoção, "só diferenças", resolução selecionável, rolagem lateral no celular. Acessível pela seção "Compare" da página da GPU.
-- [ ] **5. Filtros novos** — jogo, meta de FPS, tipo de jogo, fonte, ordenação, linha de FPS dinâmica no card.
-- [ ] **6. Filtros na URL** — etiquetas removíveis, contador, link compartilhável (é por ele que o assistente entregará o resultado).
-- [ ] **7. Seleção para comparar** — botão "Comparar" nos cards e na página da GPU, barra no rodapé com até 3 placas guardadas no navegador do visitante.
-- [ ] **8. Pontos de entrada** — link "Comparar" no topo, página `/comparar` vazia com escolha das placas; opcional: páginas fixas dos pares mais buscados.
+- [x] **3. Lógica do comparativo** — para 2 ou 3 placas: vencedor por linha, % sobre a 1ª placa, veredito. Com testes.
+- [x] **4. Página `/comparar`** — modelo com as 8 placas, mostra as escolhidas pela URL; cabeçalho fixo com troca/remoção, "só diferenças", resolução selecionável, rolagem lateral no celular. Acessível pela seção "Compare" da página da GPU.
+- [x] **5. Filtros novos** — jogo, meta de FPS, tipo de jogo, fonte, ordenação, linha de FPS dinâmica no card.
+- [x] **6. Filtros na URL** — etiquetas removíveis, contador, link compartilhável (é por ele que o assistente entregará o resultado).
+- [x] **7. Seleção para comparar** — botão "Comparar" nos cards e na página da GPU, barra no rodapé com até 3 placas guardadas no navegador do visitante.
+- [x] **8. Pontos de entrada** — link "Comparar" no topo, página `/comparar` vazia com escolha das placas; opcional (não feito): páginas fixas dos pares mais buscados.
 - [ ] **Depois: assistente** — perguntas que montam o `Criteria` da etapa 2 e entregam o link da etapa 6.
+
+## Onde ficou cada parte
+| Parte | Arquivos |
+|---|---|
+| Catálogo | `src/utils/catalog.ts` |
+| Motor de critérios | `src/utils/criteria.ts` |
+| Filtros ↔ URL e etiquetas | `src/utils/criteria-url.ts` |
+| Lógica do comparativo | `src/utils/compare.ts` |
+| HTML do comparativo (build e navegador) | `src/utils/compare-render.ts` |
+| Página do comparativo | `src/pages/comparar.astro`, `src/components/compare/compare-page.ts` |
+| Seleção para comparar | `src/utils/compare-store.ts`, `src/components/compare/CompareTray.astro`, `compare-tray.ts` |
+| Filtros da home | `src/components/filter/FilterPanel.astro`, `filter.ts`, `src/pages/index.astro` |
+
+## Como o assistente vai usar isto
+1. Perguntas → montam um `Criteria` (ex.: `{ resolutions: ['1440p'], category: 'tiro', minFps: 144, psuWatts: 650 }`).
+2. `applyCriteria(buildCatalog(), criteria)` → placas recomendadas; `evaluate(...).reasons` → o "porquê" de cada uma; `evaluateAll` → as que quase passaram.
+3. Resultado completo: `/?` + `criteriaToQuery(criteria)`.
 
 ## Referências de UX
 - Baymard: comparação usada por 67% dos usuários em produtos técnicos; recomenda "mostrar só diferenças", atributos agrupados, cabeçalho fixo e linhas bem separadas. https://baymard.com/blog/user-friendly-comparison-tools

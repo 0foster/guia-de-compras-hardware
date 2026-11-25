@@ -8,8 +8,10 @@ import GameFpsTable from '../../components/gpu/GameFpsTable.astro';
 import BuyButton from '../../components/gpu/BuyButton.astro';
 import AdjacentGpus from '../../components/gpu/AdjacentGpus.astro';
 import ProductSchema from '../../components/seo/ProductSchema.astro';
+import CompareTray from '../../components/compare/CompareTray.astro';
 import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema.astro';
-import { getAllGpus, getAffiliateLinks } from '../../utils/gpu';
+import { getAllGpus, getAffiliateLinks, getGpuBySlug } from '../../utils/gpu';
+import { compareUrl } from '../../utils/compare';
 import gpuData from '../../data/gpus.json';
 import { formatFps } from '../../utils/format';
 import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
@@ -26,6 +28,9 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { gpu } = Astro.props as Props;
 const links = getAffiliateLinks(gpu.slug);
+const compareWith = [gpu.adjacentGpus.stepDown, gpu.adjacentGpus.stepUp]
+  .map((slug) => (slug ? getGpuBySlug(slug) : undefined))
+  .filter((g): g is NonNullable<typeof g> => Boolean(g));
 ---
 
 <BaseLayout
@@ -84,6 +89,16 @@ const links = getAffiliateLinks(gpu.slug);
           <!-- Buy buttons -->
           <div class="mt-6">
             <BuyButton amazon={links?.amazon} mercadoLivre={links?.mercadoLivre} />
+            <button
+              type="button"
+              data-compare-toggle={gpu.slug}
+              data-label-add="+ Adicionar à comparação"
+              data-label-added="✓ Na comparação"
+              aria-pressed="false"
+              class="mt-3 w-full rounded-xl border-2 border-dashed border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-600 transition-colors hover:border-[var(--color-brand-red)] hover:text-[var(--color-brand-red)] aria-pressed:border-solid aria-pressed:border-[var(--color-brand-red)] aria-pressed:text-[var(--color-brand-red)] dark:border-gray-700 dark:text-gray-300"
+            >
+              + Adicionar à comparação
+            </button>
           </div>
         </div>
       </div>
@@ -135,9 +150,25 @@ const links = getAffiliateLinks(gpu.slug);
       <section class="mb-8">
         <h2 class="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100">Compare</h2>
         <AdjacentGpus stepDown={gpu.adjacentGpus.stepDown} stepUp={gpu.adjacentGpus.stepUp} />
+        {compareWith.length > 0 && (
+          <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
+            <span class="text-gray-500 dark:text-gray-400">Comparar lado a lado:</span>
+            {compareWith.map((other) => (
+              <a
+                href={compareUrl([gpu.slug, other.slug])}
+                class="rounded-full border border-gray-300 px-3 py-1 font-medium text-gray-700 transition-colors hover:border-[var(--color-brand-red)] hover:text-[var(--color-brand-red)] dark:border-gray-700 dark:text-gray-300"
+                data-compare-link={other.slug}
+              >
+                {gpu.shortName} vs {other.shortName}
+              </a>
+            ))}
+          </div>
+        )}
       </section>
     </main>
 
     <Footer />
   </div>
+
+  <CompareTray />
 </BaseLayout>
